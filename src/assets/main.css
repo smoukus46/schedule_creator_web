@@ -1,0 +1,30 @@
+html, body {
+  margin: 0; /* Убираем возможные отступы */
+  padding: 0; /* Убираем отступы */
+  height: 100%; /* Чтобы контент занимал всю высоту окна */
+}
+
+body {
+  background: rgb(255,126,242);
+  background: linear-gradient(90deg, rgba(255,126,242,1) 0%, rgba(162,0,145,1) 100%);
+  min-height: 100vh;
+  font-family: "Rubik Light", sans-serif;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+  width: 10px;
+  background: rgb(162,0,145,1);
+}
+
+body::-webkit-scrollbar-thumb:active {
+  background: #b376ab;
+}
+
+body::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: rgb(205,103,195);
+  background: linear-gradient(240deg, rgba(205,103,195,1) 0%, rgba(186,83,176,1) 70%);
+}
+
