@@ -140,7 +140,7 @@ input::-webkit-input-placeholder {
   height: 16px;
   border: none;
   background: none;
-  background-image: url('C:/Users/Nikita.Yakovlev/WebstormProjects/schedule_creator/src/assets/delete_icon.png');
+  background-image: url('../assets/delete_icon.png');
   background-size: cover;
   position: absolute;
   top: 50%;
