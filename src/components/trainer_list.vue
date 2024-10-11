@@ -55,7 +55,7 @@ export default {
 
 .trainer-div {
   width: 316px;
-  height: 250px;
+  height: 270px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.192);
   backdrop-filter: blur(10px);
@@ -80,9 +80,11 @@ div::-webkit-scrollbar-thumb {
 }
 
 ul {
+  width: 96%;
   list-style: none;
-  padding: 0;
-  margin-top: 0;
+  padding: 2px;
+  margin-top: 5px;
+  margin-left: 5px;
   text-align: center;
   border-radius: 3px;
 }
@@ -96,23 +98,26 @@ li {
   color: #fff;
   cursor: pointer;
   border-radius: 3px;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   max-width: 316px;
   overflow: hidden;
   text-overflow: ellipsis;
   overflow-wrap: break-word;
   white-space: normal;
+  user-select: none;
 }
 
 li:hover {
   background: #e376d3;
+  box-shadow: 0 4px 15px rgba(5, 5, 5, 0.5);
 }
 
 input {
   outline: none;
-  width: 98.6%;
+  width: 95%;
   height: 23px;
-  margin-top: 5px;
+  margin-top: 3px;
+  margin-left: 6px;
   text-align: center;
   font-size: 1em;
   font-family: Rubik, sans-serif;
@@ -124,6 +129,7 @@ input {
 
 input:hover {
   background: #e376d3;
+  box-shadow: 0 4px 15px rgba(5, 5, 5, 0.5);
 }
 
 input:focus {
@@ -139,7 +145,8 @@ input::-webkit-input-placeholder {
   font-family: Rubik, sans-serif;
   font-size: 1em;
   margin-top: 3px;
-  width: 100%;
+  margin-left: 6px;
+  width: 96.3%;
   height: 25px;
   position: relative;
   color: #fff;
@@ -147,11 +154,13 @@ input::-webkit-input-placeholder {
   background: #870b79 ;
   border: 0;
   border-radius: 3px;
+  box-shadow: -2px 2px 10px 0 rgba(5, 5, 5, 0.5);
 }
 
 .add-trainer:hover {
   background: #ab3e9e;
   opacity: 0.8;
+  box-shadow: 0 4px 15px rgba(5, 5, 5, 0.5);
 }
 
 .add-trainer:active {

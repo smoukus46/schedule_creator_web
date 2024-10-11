@@ -5,8 +5,8 @@ html, body {
 }
 
 body {
-  background: rgb(255,126,242);
-  background: linear-gradient(90deg, rgba(255,126,242,1) 0%, rgba(162,0,145,1) 100%);
+  background: rgb(191,189,191);
+  background: radial-gradient(circle, rgba(191,189,191,1) 30%, rgba(214,212,214,1) 100%);
   min-height: 100vh;
   font-family: "Rubik Light", sans-serif;
   overflow-y: auto;
@@ -14,8 +14,8 @@ body {
 }
 
 body::-webkit-scrollbar {
+  background-color: #d6d4d6;
   width: 10px;
-  background: rgb(162,0,145,1);
 }
 
 body::-webkit-scrollbar-thumb:active {
