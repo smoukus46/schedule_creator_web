@@ -149,7 +149,7 @@ input::-webkit-input-placeholder {
   height: 16px;
   border: none;
   background: none;
-  background-image: url('../assets/delete_icon.png');
+  background-image: url('../assets/white-xmark.svg');
   background-size: cover;
   position: absolute;
   top: 50%;

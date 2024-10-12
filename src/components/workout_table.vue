@@ -3,9 +3,18 @@
     <table>
       <caption>
         <div class="btn-div">
-          <button class="table-btn"><b>Показать расписание на выбранный месяц</b></button>
-          <button class="table-btn"><b>Сохранить созданное расписание</b></button>
-          <button class="table-btn"><b>Экспортировать расписание в Excel</b></button>
+          <button class="table-btn">
+            <img class="btn-icon" src="../assets/journal.svg" width="16" height="16" alt="Показать расписание на выбранный месяц"/>
+            <b>Показать расписание на выбранный месяц </b>
+          </button>
+          <button class="table-btn">
+            <img class="btn-icon" src="../assets/disk.svg" width="16" height="16" alt="Сохранить созданное расписание"/>
+            <b>Сохранить созданное расписание</b>
+          </button>
+          <button class="table-btn">
+            <img class="btn-icon" src="../assets/export.svg" width="16" height="16" alt="Экспортировать расписание в Excel"/>
+            <b>Экспортировать расписание в Excel</b>
+          </button>
         </div>
         <div class="datepicker-container" ref="datepickerContainer">
           <div class="validation-symbol">*</div>
@@ -14,7 +23,7 @@
               required
               class="datepicker-input"
               v-model="formattedDate"
-              placeholder="Выберите месяц и год"
+              placeholder="&#128197;Выберите месяц и год"
               readonly
               @click="togglePopup"
           />
@@ -97,10 +106,14 @@
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <button class="row-btn">X</button>
+          <button class="row-btn">
+            <img id="delete-row-btn" src="../assets/white-xmark.svg" width="19" height="19"/>
+          </button>
         </tr>
         <br>
-        <button class="row-btn">+</button>
+        <button class="row-btn">
+          <img id="add-row-btn" src="../assets/white-add.svg" width="19" height="19"/>
+        </button>
       </tbody>
     </table>
   </div>
@@ -201,7 +214,7 @@ export default {
 .table-btn {
   font-family: Rubik, sans-serif;
   font-size: 1em;
-  width: 350px;
+  width: 365px;
   margin: 20px;
   height: 30px;
   position: relative;
@@ -222,6 +235,11 @@ export default {
 .table-btn:active {
   background: #b376ab;
   transform: scale(0.99);
+}
+
+.btn-icon {
+  margin-right: 7px;
+  margin-bottom: -2px;
 }
 
 .month-picker {
@@ -445,6 +463,16 @@ th {
 .row-btn:active {
   background: #b376ab;
   transform: scale(0.95);
+}
+
+#delete-row-btn {
+  margin-top: 2px;
+  margin-left: -2.45px;
+}
+
+#add-row-btn {
+  margin-top: 2px;
+  margin-left: -3px;
 }
 
 .time {
