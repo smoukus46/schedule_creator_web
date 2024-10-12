@@ -1,42 +1,47 @@
 <template>
 <div class="trainer-div">
-  <div class="trainer-list"><ul>
-    <li>
-      Лера
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Диана
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Женя
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Ира
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Наташа
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Лена
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Света
-      <button class="delete-trainer"></button>
-    </li>
-    <li>
-      Настя
-      <button class="delete-trainer"></button>
-    </li>
-  </ul>
+  <input placeholder="Введите имя тренера">
+  <button class="add-trainer">&#x2713;</button>
+  <div class="trainer-list">
+    <ul>
+      <li>
+        Лера
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Диана
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Женя
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Ира
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Наташа
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Лена
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Света
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Настя
+        <button class="delete-trainer"></button>
+      </li>
+      <li>
+        Алёна
+        <button class="delete-trainer"></button>
+      </li>
+    </ul>
   </div>
-    <input placeholder="Введите имя тренера"><br>
-    <button class="add-trainer"><b>Добавить тренера</b></button>
 </div>
 </template>
 
@@ -49,13 +54,13 @@ export default {
 
 <style scoped>
 .trainer-list {
-  height: 75%;
+  max-height: 220px;
+  margin-top: 10px;
   overflow-x: auto;
 }
 
 .trainer-div {
-  width: 316px;
-  height: 270px;
+  width: 323px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.192);
   backdrop-filter: blur(10px);
@@ -80,10 +85,11 @@ div::-webkit-scrollbar-thumb {
 }
 
 ul {
-  width: 96%;
+  width: 307px;
   list-style: none;
   padding: 2px;
-  margin-top: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   margin-left: 5px;
   text-align: center;
   border-radius: 3px;
@@ -114,12 +120,11 @@ li:hover {
 
 input {
   outline: none;
-  width: 95%;
+  width: 275px;
   height: 23px;
-  margin-top: 3px;
   margin-left: 6px;
   text-align: center;
-  font-size: 1em;
+  font-size: 19px;
   font-family: Rubik, sans-serif;
   border-radius: 3px;
   border: 0;
@@ -145,8 +150,8 @@ input::-webkit-input-placeholder {
   font-family: Rubik, sans-serif;
   font-size: 1em;
   margin-top: 3px;
-  margin-left: 6px;
-  width: 96.3%;
+  margin-left: 4px;
+  width: 25px;
   height: 25px;
   position: relative;
   color: #fff;

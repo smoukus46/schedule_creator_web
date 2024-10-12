@@ -7,7 +7,7 @@
             <img class="btn-icon" src="../assets/journal.svg" width="16" height="16" alt="Показать расписание на выбранный месяц"/>
             <b>Показать расписание на выбранный месяц </b>
           </button>
-          <button class="table-btn">
+          <button class="table-btn" disabled>
             <img class="btn-icon" src="../assets/disk.svg" width="16" height="16" alt="Сохранить созданное расписание"/>
             <b>Сохранить созданное расписание</b>
           </button>
@@ -107,12 +107,12 @@
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
           <button class="row-btn">
-            <img id="delete-row-btn" src="../assets/white-xmark.svg" width="19" height="19"/>
+            <img id="delete-row-btn" src="../assets/white-xmark.svg" width="22" height="22"/>
           </button>
         </tr>
         <br>
         <button class="row-btn">
-          <img id="add-row-btn" src="../assets/white-add.svg" width="19" height="19"/>
+          <img id="add-row-btn" src="../assets/white-add.svg" width="22" height="22"/>
         </button>
       </tbody>
     </table>
@@ -181,10 +181,8 @@ export default {
 
 <style scoped>
 .table-space {
-  width: 82%;
+  width: 100%;
   height: 930px;
-  margin-left: 330px;
-  margin-top: -553px;
   overflow-x: hidden;
   background-image: url("https://avatars.mds.yandex.net/get-sprav-products/13074932/2a0000018e7a6f0a4300154eddee4449b6e7/M_height");
   background-position: center;
@@ -224,6 +222,7 @@ export default {
   border: 0;
   border-radius: 3px;
   box-shadow: -2px 4px 10px 0 rgba(5, 5, 5, 0.5);
+  user-select: none;
 }
 
 .table-btn:hover {
@@ -235,6 +234,15 @@ export default {
 .table-btn:active {
   background: #b376ab;
   transform: scale(0.99);
+}
+
+.table-btn:disabled {
+  background-color: #777;
+  cursor: default;
+  pointer-events: none;
+  transform: none;
+  opacity: 0.6;
+  user-select: none;
 }
 
 .btn-icon {
@@ -442,15 +450,15 @@ th {
 .row-btn {
   font-family: Rubik, sans-serif;
   font-size: 1em;
-  width: 25px;
+  width: 22px;
   margin: 0;
-  height: 25px;
+  height: 22px;
   position: relative;
   color: #fff;
   cursor: pointer;
   background: #870b79 ;
   border: 0;
-  border-radius: 3px;
+  border-radius: 50%;
   box-shadow: -2px 4px 10px 0 rgba(5, 5, 5, 0.5);
 }
 
@@ -466,13 +474,13 @@ th {
 }
 
 #delete-row-btn {
-  margin-top: 2px;
-  margin-left: -2.45px;
+  margin-top: -1px;
+  margin-left: -6px;
 }
 
 #add-row-btn {
-  margin-top: 2px;
-  margin-left: -3px;
+  margin-top: -1px;
+  margin-left: -6px;
 }
 
 .time {
@@ -489,9 +497,8 @@ th {
 }
 
 .time option {
-  background-color: #7775;
-  color: #000;
-  border-radius: 5px;
+  background-color: #870b79;
+  color: #fff;
 }
 
 </style>

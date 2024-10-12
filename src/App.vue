@@ -1,7 +1,20 @@
 <template>
 <body>
-<Menu_bar/>
-<Table_component/>
+  <div>
+    <div class="menu">
+    <Menu_bar/>
+    </div>
+    <div class="table">
+      <Table_component/>
+    </div>
+  </div>
+  <div class="frame">
+    <iframe allow="clipboard-write" src="https://music.yandex.ru/iframe/playlist/nikita.yakovlev46/3">
+      Слушайте
+      <a href='https://music.yandex.ru/users/nikita.yakovlev46/playlists/3'>Мне нравится</a> —
+      <a href='https://music.yandex.ru/users/nikita.yakovlev46'>nikita.yakovlev46</a> на Яндекс Музыке
+    </iframe>
+  </div>
 </body>
 </template>
 
@@ -20,5 +33,28 @@ export default {
 </script>
 
 <style scoped>
+.menu {
+  width: 323px;
+  height: 0;
+}
 
+.table {
+  width: 1578px;
+  height: 930px;
+  margin-left: 330px;
+}
+
+.frame {
+  width:322px;
+  margin-top: -200px;
+  margin-left: 7px;
+}
+
+iframe {
+  margin-top: -100px;
+  width:322px;
+  height:300px;
+  border:none;
+  border-radius: 5px;
+}
 </style>

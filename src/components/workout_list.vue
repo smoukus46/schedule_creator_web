@@ -1,18 +1,19 @@
 <template>
   <div class="workout-div">
-    <div class="workout-list"><ul>
-      <li>
-        Аэрорастяжка
-        <button class="delete-workout"></button>
-      </li>
-      <li>
-        Аэрорастяжка с переворотом, подворотом и перелетом
-        <button class="delete-workout"></button>
-      </li>
-    </ul>
+    <input placeholder="Введите название тренировки"/>
+    <button class="add-workout">&#x2713;</button>
+    <div class="workout-list">
+      <ul>
+        <li>
+          Аэрорастяжка
+          <button class="delete-workout"></button>
+        </li>
+        <li>
+          Аэрорастяжка с переворотом, подворотом и перелетом
+          <button class="delete-workout"></button>
+        </li>
+      </ul>
     </div>
-    <input placeholder="Введите название тренировки"><br>
-    <button class="add-workout"><b>Добавить тренировку</b></button>
   </div>
 </template>
 
@@ -25,18 +26,18 @@ export default {
 
 <style scoped>
 .workout-list {
-  height: 75%;
+  max-height: 220px;
+  margin-top: 10px;
   overflow-x: auto;
 }
 
 .workout-div {
-  width: 316px;
-  height: 270px;
+  width: 323px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.192);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(43, 43, 43, 0.568);
-  margin-top: 10px;
+  margin-top: 12px;
   margin-left: 5px;
   overflow-x: auto;
 }
@@ -56,10 +57,11 @@ div::-webkit-scrollbar-thumb {
 }
 
 ul {
-  width: 96%;
+  width: 307px;
   list-style: none;
   padding: 2px;
-  margin-top: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   margin-left: 5px;
   text-align: center;
   border-radius: 3px;
@@ -90,12 +92,11 @@ li:hover {
 
 input {
   outline: none;
-  width: 95%;
+  width: 275px;
   height: 23px;
-  margin-top: 3px;
   margin-left: 6px;
   text-align: center;
-  font-size: 1em;
+  font-size: 19px;
   font-family: Rubik, sans-serif;
   border-radius: 3px;
   border: 0;
@@ -121,8 +122,8 @@ input::-webkit-input-placeholder {
   font-family: Rubik, sans-serif;
   font-size: 1em;
   margin-top: 3px;
-  margin-left: 6px;
-  width: 96.3%;
+  margin-left: 4px;
+  width: 25px;
   height: 25px;
   position: relative;
   color: #fff;
