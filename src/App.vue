@@ -10,9 +10,6 @@
   </div>
   <div class="frame">
     <iframe allow="clipboard-write" src="https://music.yandex.ru/iframe/playlist/nikita.yakovlev46/3">
-      Слушайте
-      <a href='https://music.yandex.ru/users/nikita.yakovlev46/playlists/3'>Мне нравится</a> —
-      <a href='https://music.yandex.ru/users/nikita.yakovlev46'>nikita.yakovlev46</a> на Яндекс Музыке
     </iframe>
   </div>
 </body>

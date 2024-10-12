@@ -142,7 +142,7 @@ input::-webkit-input-placeholder {
 
 .add-workout:active {
   background: #b376ab;
-  transform: scale(0.99);
+  transform: scale(0.95);
 }
 
 .delete-workout {

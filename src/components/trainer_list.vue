@@ -170,7 +170,7 @@ input::-webkit-input-placeholder {
 
 .add-trainer:active {
   background: #b376ab;
-  transform: scale(0.99);
+  transform: scale(0.95);
 }
 
 .delete-trainer {
