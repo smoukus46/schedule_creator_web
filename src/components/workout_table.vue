@@ -126,7 +126,7 @@ export default {
       type: Function,
       required: true
     },
-    closeModal: {
+    closeLoadingModal: {
       type: Function,
       required: true
     }

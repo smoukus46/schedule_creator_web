@@ -1,7 +1,7 @@
 <template>
   <Workout_table
       :showModal="showModal"
-      :closeModal="closeModal"
+      :closeLoadingModal="closeLoadingModal"
   />
 </template>
 
@@ -15,7 +15,7 @@ export default {
       type: Function,
       required: true
     },
-    closeModal: {
+    closeLoadingModal: {
       type: Function,
       required: true
     }

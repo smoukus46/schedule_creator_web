@@ -12,7 +12,7 @@
     <div class="table">
       <Table_component
           :showModal="showModal"
-          :closeModal="closeModal"
+          :closeLoadingModal="closeLoadingModal"
       />
     </div>
   </div>
