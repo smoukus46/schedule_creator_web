@@ -1,7 +1,8 @@
 <template>
 <div class="trainer-div">
   <input placeholder="Введите имя тренера">
-  <button class="add-trainer">&#x2713;</button>
+  <button class="add-trainer" @mouseenter="startTooltipTimer('trainer')" @mouseleave="clearTooltipTimer('trainer')">&#x2713;</button>
+  <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренера</div>
   <div class="trainer-list">
     <ul>
       <li>
@@ -48,6 +49,18 @@
 <script>
 export default {
   props: {
+    isTrainerTooltipVisible: {
+      type: Boolean,
+      required: true
+    },
+    startTooltipTimer: {
+      type: Function,
+      required: true
+    },
+    clearTooltipTimer: {
+      type: Function,
+      required: true
+    }
   }
 }
 </script>
@@ -192,5 +205,17 @@ input::-webkit-input-placeholder {
 
 .delete-trainer:active {
   transform: translateY(-50%) scale(0.85);
+}
+
+.add-trainer-tooltip {
+  position: absolute;
+  top: 27px;
+  left: 140px;
+  padding: 5px;
+  background-color: #fff;
+  color: black;
+  border-radius: 4px;
+  border: 1px solid black;
+  z-index: 1;
 }
 </style>

@@ -2,7 +2,12 @@
 <body>
   <div>
     <div class="menu">
-    <Menu_bar/>
+      <Menu_bar
+          :isTrainerTooltipVisible="isTrainerTooltipVisible"
+          :isWorkoutTooltipVisible="isWorkoutTooltipVisible"
+          :startTooltipTimer="startTooltipTimer"
+          :clearTooltipTimer="clearTooltipTimer"
+      />
     </div>
     <div class="table">
       <Table_component/>
@@ -18,12 +23,36 @@
 <script>
 import Menu_bar from "@/components/menu_bar.vue";
 import Table_component from "@/components/table_component.vue";
+import Trainer_list from "@/components/trainer_list.vue";
 
 export default {
-  components: {Menu_bar, Table_component},
+  components: {Trainer_list, Menu_bar, Table_component},
   data() {
     return {
-      amount: 0
+      isTrainerTooltipVisible: false,
+      isWorkoutTooltipVisible: false,
+      tooltipTimer: null
+    }
+  },
+  methods: {
+    // Начинаем таймер, который покажет тултип через 2 секунды
+    startTooltipTimer(elem) {
+      this.tooltipTimer = setTimeout(() => {
+        if(elem === 'trainer') {
+          this.isTrainerTooltipVisible = true; // Скрываем тултип
+        } else if(elem === 'workout') {
+          this.isWorkoutTooltipVisible = true;
+        }
+      }, 1000); // 2 секунды
+    },
+    // Очищаем таймер и скрываем тултип, если мышь покидает элемент
+    clearTooltipTimer(elem) {
+      clearTimeout(this.tooltipTimer); // Сброс таймера
+      if(elem === 'trainer') {
+        this.isTrainerTooltipVisible = false; // Скрываем тултип
+      } else if(elem === 'workout') {
+        this.isWorkoutTooltipVisible = false;
+      }
     }
   }
 }

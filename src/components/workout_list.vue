@@ -1,7 +1,8 @@
 <template>
   <div class="workout-div">
     <input placeholder="Введите название тренировки"/>
-    <button class="add-workout">&#x2713;</button>
+    <button class="add-workout" @mouseenter="startTooltipTimer('workout')" @mouseleave="clearTooltipTimer('workout')">&#x2713;</button>
+    <div v-if="isWorkoutTooltipVisible" class="add-workout-tooltip">Добавить тренировку</div>
     <div class="workout-list">
       <ul>
         <li>
@@ -20,6 +21,18 @@
 <script>
 export default {
   props: {
+    isWorkoutTooltipVisible: {
+      type: Boolean,
+      required: true
+    },
+    startTooltipTimer: {
+      type: Function,
+      required: true
+    },
+    clearTooltipTimer: {
+      type: Function,
+      required: true
+    }
   }
 }
 </script>
@@ -164,5 +177,17 @@ input::-webkit-input-placeholder {
 
 .delete-workout:active {
   transform: translateY(-50%) scale(0.85);
+}
+
+.add-workout-tooltip {
+  position: absolute;
+  top: 27px;
+  left: 113px;
+  padding: 5px;
+  background-color: #fff;
+  color: black;
+  border-radius: 4px;
+  border: 1px solid black;
+  z-index: 1;
 }
 </style>
