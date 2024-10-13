@@ -10,8 +10,25 @@
       />
     </div>
     <div class="table">
-      <Table_component/>
+      <Table_component
+          :showModal="showModal"
+          :closeModal="closeModal"
+      />
     </div>
+  </div>
+  <div>
+    <Loading_modal
+        :modalText="modalText"
+        :isLoadingModalVisible="isLoadingModalVisible"
+    />
+  </div>
+  <div>
+    <Error_modal
+        :errorText="errorText"
+        :isErrorModalVisible="isErrorModalVisible"
+        :showErrorModal="showErrorModal"
+        :closeErrorModal="closeErrorModal"
+    />
   </div>
   <div class="frame">
     <iframe allow="clipboard-write" src="https://music.yandex.ru/iframe/playlist/nikita.yakovlev46/3">
@@ -24,11 +41,17 @@
 import Menu_bar from "@/components/menu_bar.vue";
 import Table_component from "@/components/table_component.vue";
 import Trainer_list from "@/components/trainer_list.vue";
+import Loading_modal from "@/components/loading_modal.vue";
+import Error_modal from "@/components/error_modal.vue";
 
 export default {
-  components: {Trainer_list, Menu_bar, Table_component},
+  components: {Trainer_list, Menu_bar, Table_component, Loading_modal, Error_modal},
   data() {
     return {
+      errorText: "",
+      modalText: "",
+      isErrorModalVisible: false,
+      isLoadingModalVisible: false,
       isTrainerTooltipVisible: false,
       isWorkoutTooltipVisible: false,
       tooltipTimer: null
@@ -53,6 +76,20 @@ export default {
       } else if(elem === 'workout') {
         this.isWorkoutTooltipVisible = false;
       }
+    },
+    showModal(modalText) {
+      this.isLoadingModalVisible = true;
+      this.modalText = modalText;
+    },
+    showErrorModal(errorText) {
+      this.isErrorModalVisible = true;
+      this.errorText = errorText;
+    },
+    closeLoadingModal() {
+      this.isLoadingModalVisible = false;
+    },
+    closeErrorModal() {
+      this.isErrorModalVisible = false;
     }
   }
 }

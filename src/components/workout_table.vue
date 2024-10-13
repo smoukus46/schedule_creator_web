@@ -3,11 +3,11 @@
     <table>
       <caption>
         <div class="btn-div">
-          <button class="table-btn">
+          <button class="table-btn" @click="showValidationError('загружается')">
             <img class="btn-icon" src="../assets/journal.svg" width="16" height="16" alt="Показать расписание на выбранный месяц"/>
             <b>Показать расписание на выбранный месяц </b>
           </button>
-          <button class="table-btn" disabled>
+          <button class="table-btn" disabled @click="showValidationError('сохраняется')">
             <img class="btn-icon" src="../assets/disk.svg" width="16" height="16" alt="Сохранить созданное расписание"/>
             <b>Сохранить созданное расписание</b>
           </button>
@@ -27,7 +27,7 @@
               readonly
               @click="togglePopup"
           />
-          <div class="validation-error" hidden>Поле обязательно для заполнения</div>
+          <div v-if="isValidationMessageVisible" class="validation-error">Поле обязательно для заполнения</div>
           <div v-if="showPopup" class="datepicker">
             <div class="month-picker">
               <span class="prev-year" @click="prevYear">&#10094;</span>
@@ -122,10 +122,18 @@
 <script>
 export default {
   props: {
-
+    showModal: {
+      type: Function,
+      required: true
+    },
+    closeModal: {
+      type: Function,
+      required: true
+    }
   },
   data() {
     return {
+      isValidationMessageVisible: false,
       selectedYear: new Date().getFullYear(),
       selectedMonth: null,
       showPopup: false,
@@ -166,6 +174,16 @@ export default {
     },
     textareaColoring(event) {
       event.target.nextSibling.style.backgroundColor = event.target.value;
+    },
+    showValidationError(modalMessage) {
+      const input = document.querySelector('.datepicker-input');
+
+      if(input.value === '') {
+        this.isValidationMessageVisible = true;
+      } else {
+        this.isValidationMessageVisible = false;
+        this.showModal(modalMessage);
+      }
     },
   },
   mounted() {
