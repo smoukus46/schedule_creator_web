@@ -5,7 +5,7 @@
         class="add-trainer"
         @mouseenter="startTooltipTimer('trainer')"
         @mouseleave="clearTooltipTimer('trainer')"
-        @click="createLiElem(this.ulElem, this.trainer_input, 'trainerList')">
+        @click="createLiElem(trainer_list, 'trainerList')">
       &#x2713;
     </button>
     <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренера</div>
@@ -66,6 +66,7 @@ export default {
 
 .trainer-div {
   width: 323px;
+  min-height: 70px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.192);
   backdrop-filter: blur(10px);

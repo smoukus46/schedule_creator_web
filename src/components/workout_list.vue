@@ -5,7 +5,7 @@
         class="add-workout"
         @mouseenter="startTooltipTimer('workout')"
         @mouseleave="clearTooltipTimer('workout')"
-        @click="createLiElem(this.ulElem, this.workout_input, 'workoutList')">
+        @click="createLiElem(workout_list, 'workoutList')">
       &#x2713;
     </button>
     <div v-if="isWorkoutTooltipVisible" class="add-workout-tooltip">Добавить тренировку</div>
@@ -22,12 +22,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      ulElem: document.querySelector('#workoutUL'),
-      workout_input: document.querySelector('.add-workout-input')
-    }
-  },
   props: {
     isWorkoutTooltipVisible: {
       type: Boolean,
@@ -70,6 +64,7 @@ export default {
 
 .workout-div {
   width: 323px;
+  min-height: 70px;
   border-radius: 5px;
   background: rgba(255, 255, 255, 0.192);
   backdrop-filter: blur(10px);

@@ -11,7 +11,7 @@
             <img class="btn-icon" src="../assets/disk.svg" width="16" height="16" alt="Сохранить созданное расписание"/>
             <b>Сохранить созданное расписание</b>
           </button>
-          <button class="table-btn">
+          <button class="table-btn" @click="downloadSchedule('/Расписание_тренировок_2024.xlsx')">
             <img class="btn-icon" src="../assets/export.svg" width="16" height="16" alt="Экспортировать расписание в Excel"/>
             <b>Экспортировать расписание в Excel</b>
           </button>
@@ -61,8 +61,8 @@
       </tr>
       </thead>
       <tbody>
-        <tr id="1">
-          <th id="1">
+        <tr v-for="(row, index) in tableRows" :key="index">
+          <th>
             <select class="time">
               <option value="9:00 - 10:00" selected>9:00 - 10:00</option>
               <option value="10:00 - 11:00">10:00 - 11:00</option>
@@ -78,40 +78,39 @@
               <option value="20:00 - 21:00">20:00 - 21:00</option>
             </select>
           </th>
-          <td id="1.1">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <td id ="1.2">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <td id="1.3">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <td id="1.4">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <td id="1.5">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <td id="1.6">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <td id="1.7">
+          <td>
             <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
             <textarea rows="3" class="workout-textarea"></textarea>
           </td>
-          <button class="row-btn">
+          <button class="row-btn" @click="deleteRow">
             <img id="delete-row-btn" src="../assets/white-xmark.svg" width="22" height="22"/>
           </button>
         </tr>
-        <br>
-        <button class="row-btn">
+        <button class="row-btn" @click="addRow">
           <img id="add-row-btn" src="../assets/white-add.svg" width="22" height="22"/>
         </button>
       </tbody>
@@ -133,6 +132,7 @@ export default {
   },
   data() {
     return {
+      tableRows: [{}],
       isValidationMessageVisible: false,
       selectedYear: new Date().getFullYear(),
       selectedMonth: null,
@@ -152,6 +152,29 @@ export default {
     },
   },
   methods: {
+    async downloadSchedule(url) {
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Ошибка при получении файла');
+        }
+
+        const blob = await response.blob();
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(blob);
+
+        const filename = url.split('/').pop();
+        downloadLink.download = filename;
+
+        downloadLink.click();
+
+        URL.revokeObjectURL(downloadLink.href);
+      } catch (error) {
+        console.error('Ошибка при загрузке файлов', error)
+      }
+    },
     togglePopup() {
       this.showPopup = !this.showPopup;
     },
@@ -185,6 +208,12 @@ export default {
         this.showModal(modalMessage);
       }
     },
+    addRow() {
+      this.tableRows.push({});
+    },
+    deleteRow(event) {
+      event.target.parentNode.parentNode.remove();
+    }
   },
   mounted() {
     // Добавляем обработчик события при монтировании компонента

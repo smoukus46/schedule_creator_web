@@ -116,9 +116,10 @@ export default {
         console.error('Ошибка при выполнении запроса', error);
       }
     },
-    async createLiElem(ulElem, inputElem, elemURL) {
+    async createLiElem(listType, elemURL) {
       try {
-        const value = inputElem.value;
+        const input = event.target.previousSibling;
+        const value = input.value;
 
         const response = await fetch(`/api/${elemURL}`, {
           method: "POST",
@@ -130,7 +131,8 @@ export default {
 
         if (response.ok === true) {
           const data = await response.json();
-          ulElem.append(data);
+          listType.push(data);
+          input.value = '';
         } else {
           console.error('Ошибка при добавлении данных');
         }
