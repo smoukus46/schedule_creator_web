@@ -5,8 +5,13 @@
       <Menu_bar
           :isTrainerTooltipVisible="isTrainerTooltipVisible"
           :isWorkoutTooltipVisible="isWorkoutTooltipVisible"
+          :workout_list="workout_list"
+          :trainer_list="trainer_list"
           :startTooltipTimer="startTooltipTimer"
           :clearTooltipTimer="clearTooltipTimer"
+          :getInfo="getInfo"
+          :createLiElem="createLiElem"
+          :deleteData="deleteData"
       />
     </div>
     <div class="table">
@@ -54,7 +59,9 @@ export default {
       isLoadingModalVisible: false,
       isTrainerTooltipVisible: false,
       isWorkoutTooltipVisible: false,
-      tooltipTimer: null
+      tooltipTimer: null,
+      workout_list: [],
+      trainer_list: []
     }
   },
   methods: {
@@ -90,7 +97,69 @@ export default {
     },
     closeErrorModal() {
       this.isErrorModalVisible = false;
+    },
+    async getInfo(elem, elemURL) {
+      try {
+
+        const response = await fetch(`/api/${elemURL}`, {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (response.ok === true) {
+          const data = await response.json();
+          elem = data;
+        } else {
+          console.error('Ошибка при загрузке данных');
+        }
+      } catch (error) {
+        console.error('Ошибка при выполнении запроса', error);
+      }
+    },
+    async createLiElem(ulElem, inputElem, elemURL) {
+      try {
+        const value = inputElem.value;
+
+        const response = await fetch(`/api/${elemURL}`, {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: value
+          })
+        });
+
+        if (response.ok === true) {
+          const data = await response.json();
+          ulElem.append(data);
+        } else {
+          console.error('Ошибка при добавлении данных');
+        }
+      } catch (error) {
+        console.error('Ошибка при выполнении запроса', error);
+      }
+    },
+    async deleteData(elemURL, id) {
+      try {
+
+        const response = await fetch(`/api/${elemURL}/${id}`, {
+          method: "DELETE",
+          headers: { "Accept": "application/json" }
+        });
+
+        if (response.ok === true) {
+          const data = await response.json();
+          event.target.parentNode.remove();
+        } else {
+          console.error('Ошибка при добавлении данных');
+        }
+      } catch (error) {
+        console.error('Ошибка при выполнении запроса', error);
+      }
     }
+  },
+  mounted() {
+    //this.getInfo(this.workout_list, 'workoutList');
+    //this.getInfo(this.trainer_list, 'trainerList');
   }
 }
 </script>

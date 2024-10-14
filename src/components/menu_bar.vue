@@ -1,13 +1,21 @@
 <template>
   <Trainer_list
       :isTrainerTooltipVisible="isTrainerTooltipVisible"
+      :trainer_list="trainer_list"
       :startTooltipTimer="startTooltipTimer"
       :clearTooltipTimer="clearTooltipTimer"
+      :getInfo="getInfo"
+      :createLiElem="createLiElem"
+      :deleteData="deleteData"
   />
   <Workout_list
       :isWorkoutTooltipVisible="isWorkoutTooltipVisible"
+      :workout_list="workout_list"
       :startTooltipTimer="startTooltipTimer"
       :clearTooltipTimer="clearTooltipTimer"
+      :getInfo="getInfo"
+      :createLiElem="createLiElem"
+      :deleteData="deleteData"
   />
 </template>
 
@@ -32,6 +40,26 @@ export default {
     },
     clearTooltipTimer: {
       type: Function,
+      required: true
+    },
+    getInfo: {
+      type: Function,
+      required: true
+    },
+    createLiElem: {
+      type: Function,
+      required: true
+    },
+    deleteData: {
+      type: Function,
+      required: true
+    },
+    trainer_list: {
+      type: Array,
+      required: true
+    },
+    workout_list: {
+      type: Array,
       required: true
     }
   }

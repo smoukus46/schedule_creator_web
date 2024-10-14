@@ -1,17 +1,19 @@
 <template>
   <div class="workout-div">
-    <input placeholder="Введите название тренировки"/>
-    <button class="add-workout" @mouseenter="startTooltipTimer('workout')" @mouseleave="clearTooltipTimer('workout')">&#x2713;</button>
+    <input class="add-workout-input" placeholder="Введите название тренировки"/>
+    <button
+        class="add-workout"
+        @mouseenter="startTooltipTimer('workout')"
+        @mouseleave="clearTooltipTimer('workout')"
+        @click="createLiElem(this.ulElem, this.workout_input, 'workoutList')">
+      &#x2713;
+    </button>
     <div v-if="isWorkoutTooltipVisible" class="add-workout-tooltip">Добавить тренировку</div>
     <div class="workout-list">
-      <ul>
-        <li>
-          Аэрорастяжка
-          <button class="delete-workout"></button>
-        </li>
-        <li>
-          Аэрорастяжка с переворотом, подворотом и перелетом
-          <button class="delete-workout"></button>
+      <ul id="workoutUL">
+        <li v-for="(workout, index) in workout_list" :key="index">
+          {{ workout.name }}
+          <button class="delete-workout" @click="deleteData()"></button>
         </li>
       </ul>
     </div>
@@ -20,6 +22,12 @@
 
 <script>
 export default {
+  data () {
+    return {
+      ulElem: document.querySelector('#workoutUL'),
+      workout_input: document.querySelector('.add-workout-input')
+    }
+  },
   props: {
     isWorkoutTooltipVisible: {
       type: Boolean,
@@ -31,6 +39,22 @@ export default {
     },
     clearTooltipTimer: {
       type: Function,
+      required: true
+    },
+    getInfo: {
+      type: Function,
+      required: true
+    },
+    createLiElem: {
+      type: Function,
+      required: true
+    },
+    deleteData: {
+      type: Function,
+      required: true
+    },
+    workout_list: {
+      type: Array,
       required: true
     }
   }

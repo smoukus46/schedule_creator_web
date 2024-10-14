@@ -1,53 +1,33 @@
 <template>
-<div class="trainer-div">
-  <input placeholder="Введите имя тренера">
-  <button class="add-trainer" @mouseenter="startTooltipTimer('trainer')" @mouseleave="clearTooltipTimer('trainer')">&#x2713;</button>
-  <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренера</div>
-  <div class="trainer-list">
-    <ul>
-      <li>
-        Лера
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Диана
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Женя
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Ира
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Наташа
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Лена
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Света
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Настя
-        <button class="delete-trainer"></button>
-      </li>
-      <li>
-        Алёна
-        <button class="delete-trainer"></button>
-      </li>
-    </ul>
+  <div class="trainer-div">
+    <input class="add-trainer-input" placeholder="Введите имя тренера">
+    <button
+        class="add-trainer"
+        @mouseenter="startTooltipTimer('trainer')"
+        @mouseleave="clearTooltipTimer('trainer')"
+        @click="createLiElem(this.ulElem, this.trainer_input, 'trainerList')">
+      &#x2713;
+    </button>
+    <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренера</div>
+    <div class="trainer-list">
+      <ul id="trainerUL">
+        <li v-for="(trainer, index) in trainer_list" :key="index">
+        {{ trainer.name }}
+          <button class="delete-trainer" @click="deleteData()"></button>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
 export default {
+  data () {
+    return {
+      ulElem: document.querySelector('#trainerUL'),
+      trainer_input: document.querySelector('.add-trainer-input')
+    }
+  },
   props: {
     isTrainerTooltipVisible: {
       type: Boolean,
@@ -59,6 +39,18 @@ export default {
     },
     clearTooltipTimer: {
       type: Function,
+      required: true
+    },
+    createLiElem: {
+      type: Function,
+      required: true
+    },
+    deleteData: {
+      type: Function,
+      required: true
+    },
+    trainer_list: {
+      type: Array,
       required: true
     }
   }
