@@ -17,6 +17,7 @@
     <div class="table">
       <Table_component
           :showModal="showModal"
+          :showErrorModal="showErrorModal"
           :closeLoadingModal="closeLoadingModal"
       />
     </div>

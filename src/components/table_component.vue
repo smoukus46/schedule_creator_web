@@ -1,6 +1,7 @@
 <template>
   <Workout_table
       :showModal="showModal"
+      :showErrorModal="showErrorModal"
       :closeLoadingModal="closeLoadingModal"
   />
 </template>
@@ -12,6 +13,10 @@ export default {
   components: {Workout_table},
   props: {
     showModal: {
+      type: Function,
+      required: true
+    },
+    showErrorModal: {
       type: Function,
       required: true
     },

@@ -3,17 +3,40 @@
     <table>
       <caption>
         <div class="btn-div">
-          <button class="table-btn" @click="showValidationError('загружается')">
-            <img class="btn-icon" src="../assets/journal.svg" width="16" height="16" alt="Показать расписание на выбранный месяц"/>
+          <button class="table-btn" @click="getTable">
+            <img
+                class="btn-icon"
+                src="../assets/journal.svg"
+                width="16"
+                height="16"
+                alt="Показать расписание на выбранный месяц"
+            />
             <b>Показать расписание на выбранный месяц </b>
           </button>
-          <button class="table-btn" disabled @click="showValidationError('сохраняется')">
-            <img class="btn-icon" src="../assets/disk.svg" width="16" height="16" alt="Сохранить созданное расписание"/>
+          <button
+              id="save-button"
+              class="table-btn"
+              :disabled="!canSave"
+              @click="submitTable"
+          >
+            <img
+                class="btn-icon"
+                src="../assets/disk.svg"
+                width="16"
+                height="16"
+                alt="Сохранить созданное расписание"
+            />
             <b>Сохранить созданное расписание</b>
           </button>
           <button class="table-btn" @click="downloadSchedule('/Расписание_тренировок_2024.xlsx')">
-            <img class="btn-icon" src="../assets/export.svg" width="16" height="16" alt="Экспортировать расписание в Excel"/>
-            <b>Экспортировать расписание в Excel</b>
+            <img
+                class="btn-icon"
+                src="../assets/export.svg"
+                width="16"
+                height="16"
+                alt="Экспортировать расписание в Excel"
+            />
+            <b>Выгрузить файл с расписанием</b>
           </button>
         </div>
         <div class="datepicker-container" ref="datepickerContainer">
@@ -60,11 +83,11 @@
         <th class="day-header">Воскресенье</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody @input="checkRows">
         <tr v-for="(row, index) in tableRows" :key="index">
           <th>
-            <select class="time">
-              <option value="9:00 - 10:00" selected>9:00 - 10:00</option>
+            <select v-model="row.time" class="time">
+              <option value="9:00 - 10:00">9:00 - 10:00</option>
               <option value="10:00 - 11:00">10:00 - 11:00</option>
               <option value="11:00 - 12:00">11:00 - 12:00</option>
               <option value="12:00 - 13:00">12:00 - 13:00</option>
@@ -78,35 +101,17 @@
               <option value="20:00 - 21:00">20:00 - 21:00</option>
             </select>
           </th>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
+          <td v-for="(cell, i) in row.cells" :key="i">
+            <input
+                @input="textareaColoring"
+                type="color"
+                class="trainer-color"
+                value="#ffffff"
+                v-model="cell.color"
+            />
+            <textarea rows="3" v-model="cell.text" class="workout-textarea"></textarea>
           </td>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
-          </td>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
-          </td>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
-          </td>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
-          </td>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
-          </td>
-          <td>
-            <input @input="textareaColoring" type="color" class="trainer-color" value="#ffffff"/>
-            <textarea rows="3" class="workout-textarea"></textarea>
-          </td>
-          <button class="row-btn" @click="deleteRow">
+          <button class="row-btn" @click="deleteRow(index)">
             <img id="delete-row-btn" src="../assets/white-xmark.svg" width="22" height="22"/>
           </button>
         </tr>
@@ -125,6 +130,10 @@ export default {
       type: Function,
       required: true
     },
+    showErrorModal: {
+      type: Function,
+      required: true
+    },
     closeLoadingModal: {
       type: Function,
       required: true
@@ -132,7 +141,8 @@ export default {
   },
   data() {
     return {
-      tableRows: [{}],
+      tableRows: [],
+      canSave: false,
       isValidationMessageVisible: false,
       selectedYear: new Date().getFullYear(),
       selectedMonth: null,
@@ -140,7 +150,7 @@ export default {
       months: [
         "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
         "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
-      ],
+      ]
     };
   },
   computed: {
@@ -203,16 +213,96 @@ export default {
 
       if(input.value === '') {
         this.isValidationMessageVisible = true;
+        return false;
       } else {
         this.isValidationMessageVisible = false;
         this.showModal(modalMessage);
+        return true;
       }
     },
     addRow() {
-      this.tableRows.push({});
+      this.tableRows.push({
+        time: '',
+        cells: Array.from({ length: 7 }, () => ({ color: '#ffffff', text: '' }))
+      });
+      this.checkRows();
     },
-    deleteRow(event) {
-      event.target.parentNode.parentNode.remove();
+    deleteRow(index) {
+      this.tableRows.splice(index, 1);
+      this.checkRows();
+    },
+    checkRows() {
+      if(this.tableRows.length >= 1) {
+        this.canSave = this.tableRows.every(row => {
+
+          return (
+              row.time !== '' &&
+              row.cells.every(cell => cell.text !== '')
+          );
+        });
+      } else {
+        this.canSave = false;
+      }
+    },
+    async getTable() {
+      try {
+        if(this.showValidationError('загружается')) {
+          const input = document.querySelector('.datepicker-input');
+          const response = await fetch(`/api/get-table/${input.value}`);
+
+          if (response.ok) {
+            const data = await response.json();
+
+            this.closeLoadingModal();
+
+            this.tableRows = data.rows; // Заполняем таблицу полученными данными
+          } else {
+            this.closeLoadingModal();
+            this.showErrorModal('Ошибка при получении данных');
+
+            console.error('Ошибка при получении данных:', response.statusText);
+          }
+        }
+      } catch (error) {
+        this.closeLoadingModal();
+        this.showErrorModal(error);
+
+        console.error('Ошибка:', error, error.statusCode);
+      }
+    },
+    async submitTable() {
+      try {
+        if(this.showValidationError('сохраняется')) {
+          const input = document.querySelector('.datepicker-input');
+
+          const response = await fetch(`/api/save-table/${input.value}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ rows: this.tableRows }),
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+
+            this.closeLoadingModal();
+            this.showErrorModal('Данные успешно отправлены');
+
+            console.log('Данные успешно отправлены:', result);
+          } else {
+            this.closeLoadingModal();
+            this.showErrorModal('Ошибка при отправке данных');
+
+            console.error('Ошибка при отправке данных:', response.statusText);
+          }
+        }
+      } catch (error) {
+        this.closeLoadingModal();
+        this.showErrorModal(error);
+
+        console.error('Ошибка:', error);
+      }
     }
   },
   mounted() {
