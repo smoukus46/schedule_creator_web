@@ -11,10 +11,17 @@
     <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренера</div>
     <div class="trainer-list">
       <ul id="trainerUL">
-        <li v-for="(trainer, index) in trainer_list" :key="index">
+        <li
+            v-for="(trainer, index) in trainer_list"
+            :key="index"
+            :draggable="true"
+            @dragstart="onDragStart($event)"
+        >
         {{ trainer.name }}
           <button class="delete-trainer" @click="deleteData()"></button>
         </li>
+        <li :draggable="true"
+            @dragstart="onDragStart($event)">Lera</li>
       </ul>
     </div>
   </div>
@@ -46,6 +53,10 @@ export default {
       required: true
     },
     deleteData: {
+      type: Function,
+      required: true
+    },
+    onDragStart: {
       type: Function,
       required: true
     },
@@ -108,7 +119,7 @@ li {
   font-size: 20px;
   background: #CD67A4;
   color: #fff;
-  cursor: pointer;
+  cursor: grab;
   border-radius: 3px;
   margin-bottom: 4px;
   max-width: 316px;

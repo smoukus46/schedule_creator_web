@@ -12,6 +12,7 @@
           :getInfo="getInfo"
           :createLiElem="createLiElem"
           :deleteData="deleteData"
+          :onDragStart="onDragStart"
       />
     </div>
     <div class="table">
@@ -19,6 +20,7 @@
           :showModal="showModal"
           :showErrorModal="showErrorModal"
           :closeLoadingModal="closeLoadingModal"
+          :onDrop="onDrop"
       />
     </div>
   </div>
@@ -62,7 +64,8 @@ export default {
       isWorkoutTooltipVisible: false,
       tooltipTimer: null,
       workout_list: [],
-      trainer_list: []
+      trainer_list: [],
+      draggedItem: null,
     }
   },
   methods: {
@@ -158,7 +161,17 @@ export default {
       } catch (error) {
         console.error('Ошибка при выполнении запроса', error);
       }
-    }
+    },
+    onDragStart(event) {
+      this.draggedItem = event.target.textContent;
+    },
+    onDrop(event) {
+      if(event.target.value !== '') {
+        event.target.value = event.target.value + ' - ' + this.draggedItem.value;
+      } else {
+        event.target.value = event.target.value + this.draggedItem.value;
+      }
+    },
   },
   mounted() {
     //this.getInfo(this.workout_list, 'workoutList');

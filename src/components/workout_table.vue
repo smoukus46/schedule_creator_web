@@ -101,7 +101,7 @@
               <option value="20:00 - 21:00">20:00 - 21:00</option>
             </select>
           </th>
-          <td v-for="(cell, i) in row.cells" :key="i">
+          <td v-for="(cell, i) in row.cells" :key="i" @dragover.prevent @drop="onDrop($event)">
             <input
                 @input="textareaColoring"
                 type="color"
@@ -135,6 +135,10 @@ export default {
       required: true
     },
     closeLoadingModal: {
+      type: Function,
+      required: true
+    },
+    onDrop: {
       type: Function,
       required: true
     }

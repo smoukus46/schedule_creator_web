@@ -7,6 +7,7 @@
       :getInfo="getInfo"
       :createLiElem="createLiElem"
       :deleteData="deleteData"
+      :onDragStart="onDragStart"
   />
   <Workout_list
       :isWorkoutTooltipVisible="isWorkoutTooltipVisible"
@@ -16,6 +17,7 @@
       :getInfo="getInfo"
       :createLiElem="createLiElem"
       :deleteData="deleteData"
+      :onDragStart="onDragStart"
   />
 </template>
 
@@ -51,6 +53,10 @@ export default {
       required: true
     },
     deleteData: {
+      type: Function,
+      required: true
+    },
+    onDragStart: {
       type: Function,
       required: true
     },

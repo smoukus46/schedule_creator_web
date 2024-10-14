@@ -15,6 +15,8 @@
           {{ workout.name }}
           <button class="delete-workout" @click="deleteData()"></button>
         </li>
+        <li :draggable="true"
+            @dragstart="onDragStart($event, $event.target)">Aero</li>
       </ul>
     </div>
   </div>
@@ -44,6 +46,10 @@ export default {
       required: true
     },
     deleteData: {
+      type: Function,
+      required: true
+    },
+    onDragStart: {
       type: Function,
       required: true
     },

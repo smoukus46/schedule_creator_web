@@ -3,6 +3,7 @@
       :showModal="showModal"
       :showErrorModal="showErrorModal"
       :closeLoadingModal="closeLoadingModal"
+      :onDrop="onDrop"
   />
 </template>
 
@@ -21,6 +22,10 @@ export default {
       required: true
     },
     closeLoadingModal: {
+      type: Function,
+      required: true
+    },
+    onDrop: {
       type: Function,
       required: true
     }
