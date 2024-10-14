@@ -167,9 +167,9 @@ export default {
     },
     onDrop(event) {
       if(event.target.value !== '') {
-        event.target.value = event.target.value + ' - ' + this.draggedItem.value;
+        event.target.value = event.target.value + ' - ' + this.draggedItem;
       } else {
-        event.target.value = event.target.value + this.draggedItem.value;
+        event.target.value = event.target.value + this.draggedItem;
       }
     },
   },
