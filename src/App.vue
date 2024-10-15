@@ -17,6 +17,7 @@
     </div>
     <div class="table">
       <Table_component
+          :tableRows="tableRows"
           :showModal="showModal"
           :showErrorModal="showErrorModal"
           :closeLoadingModal="closeLoadingModal"
@@ -65,6 +66,7 @@ export default {
       tooltipTimer: null,
       workout_list: [],
       trainer_list: [],
+      tableRows: [],
       draggedItem: null,
     }
   },
@@ -162,15 +164,18 @@ export default {
         console.error('Ошибка при выполнении запроса', error);
       }
     },
-    onDragStart(event) {
-      this.draggedItem = event.target.textContent;
+    onDragStart(event, trainer) {
+      this.draggedItem = trainer.name;
     },
-    onDrop(event) {
-      if(event.target.value !== '') {
-        event.target.value = event.target.value + ' - ' + this.draggedItem;
+    onDrop(event, rowIndex, cellIndex) {
+      const cell = this.tableRows[rowIndex].cells[cellIndex];
+
+      if (cell.text !== '') {
+        cell.text += ' - ' + this.draggedItem;
       } else {
-        event.target.value = event.target.value + this.draggedItem;
+        cell.text = this.draggedItem;
       }
+      this.draggedItem = null; // Очищаем значение после дропа
     },
   },
   mounted() {

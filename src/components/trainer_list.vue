@@ -15,13 +15,11 @@
             v-for="(trainer, index) in trainer_list"
             :key="index"
             :draggable="true"
-            @dragstart="onDragStart($event)"
+            @dragstart="onDragStart($event, trainer)"
         >
         {{ trainer.name }}
           <button class="delete-trainer" @click="deleteData()"></button>
         </li>
-        <li :draggable="true"
-            @dragstart="onDragStart($event)">Lera</li>
       </ul>
     </div>
   </div>

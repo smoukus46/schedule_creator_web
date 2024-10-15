@@ -84,7 +84,7 @@
       </tr>
       </thead>
       <tbody @input="checkRows">
-        <tr v-for="(row, index) in tableRows" :key="index">
+        <tr v-for="(row, rowIndex) in tableRows" :key="rowIndex">
           <th>
             <select v-model="row.time" class="time">
               <option value="9:00 - 10:00">9:00 - 10:00</option>
@@ -101,7 +101,12 @@
               <option value="20:00 - 21:00">20:00 - 21:00</option>
             </select>
           </th>
-          <td v-for="(cell, i) in row.cells" :key="i" @dragover.prevent @drop="onDrop($event)">
+          <td
+              v-for="(cell, cellIndex) in row.cells"
+              :key="cellIndex"
+              @dragover.prevent
+              @drop="onDrop($event, rowIndex, cellIndex)"
+          >
             <input
                 @input="textareaColoring"
                 type="color"
@@ -111,7 +116,7 @@
             />
             <textarea rows="3" v-model="cell.text" class="workout-textarea"></textarea>
           </td>
-          <button class="row-btn" @click="deleteRow(index)">
+          <button class="row-btn" @click="deleteRow(rowIndex)">
             <img id="delete-row-btn" src="../assets/white-xmark.svg" width="22" height="22"/>
           </button>
         </tr>
@@ -126,6 +131,10 @@
 <script>
 export default {
   props: {
+    tableRows: {
+      type: Array,
+      required: true
+    },
     showModal: {
       type: Function,
       required: true
@@ -145,7 +154,6 @@ export default {
   },
   data() {
     return {
-      tableRows: [],
       canSave: false,
       isValidationMessageVisible: false,
       selectedYear: new Date().getFullYear(),

@@ -1,5 +1,6 @@
 <template>
   <Workout_table
+      :tableRows="tableRows"
       :showModal="showModal"
       :showErrorModal="showErrorModal"
       :closeLoadingModal="closeLoadingModal"
@@ -13,6 +14,10 @@ import Workout_table from "@/components/workout_table.vue";
 export default {
   components: {Workout_table},
   props: {
+    tableRows: {
+      type: Array,
+      required: true
+    },
     showModal: {
       type: Function,
       required: true

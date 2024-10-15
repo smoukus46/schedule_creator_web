@@ -11,12 +11,15 @@
     <div v-if="isWorkoutTooltipVisible" class="add-workout-tooltip">Добавить тренировку</div>
     <div class="workout-list">
       <ul id="workoutUL">
-        <li v-for="(workout, index) in workout_list" :key="index">
+        <li
+            v-for="(workout, index) in workout_list"
+            :key="index"
+            :draggable="true"
+            @dragstart="onDragStart($event, workout)"
+        >
           {{ workout.name }}
           <button class="delete-workout" @click="deleteData()"></button>
         </li>
-        <li :draggable="true"
-            @dragstart="onDragStart($event, $event.target)">Aero</li>
       </ul>
     </div>
   </div>
