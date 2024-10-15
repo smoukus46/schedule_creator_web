@@ -4,7 +4,7 @@
       :showModal="showModal"
       :showErrorModal="showErrorModal"
       :closeLoadingModal="closeLoadingModal"
-      :onDrop="onDrop"
+      :draggedItem="draggedItem"
   />
 </template>
 
@@ -30,8 +30,8 @@ export default {
       type: Function,
       required: true
     },
-    onDrop: {
-      type: Function,
+    draggedItem: {
+      type: String,
       required: true
     }
   }

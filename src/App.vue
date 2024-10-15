@@ -21,7 +21,7 @@
           :showModal="showModal"
           :showErrorModal="showErrorModal"
           :closeLoadingModal="closeLoadingModal"
-          :onDrop="onDrop"
+          :draggedItem="draggedItem"
       />
     </div>
   </div>
@@ -63,11 +63,11 @@ export default {
       isLoadingModalVisible: false,
       isTrainerTooltipVisible: false,
       isWorkoutTooltipVisible: false,
+      draggedItem: null,
       tooltipTimer: null,
       workout_list: [],
       trainer_list: [],
-      tableRows: [],
-      draggedItem: null,
+      tableRows: []
     }
   },
   methods: {
@@ -166,17 +166,7 @@ export default {
     },
     onDragStart(event, trainer) {
       this.draggedItem = trainer.name;
-    },
-    onDrop(event, rowIndex, cellIndex) {
-      const cell = this.tableRows[rowIndex].cells[cellIndex];
-
-      if (cell.text !== '') {
-        cell.text += ' - ' + this.draggedItem;
-      } else {
-        cell.text = this.draggedItem;
-      }
-      this.draggedItem = null; // Очищаем значение после дропа
-    },
+    }
   },
   mounted() {
     //this.getInfo(this.workout_list, 'workoutList');

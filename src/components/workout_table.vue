@@ -147,8 +147,8 @@ export default {
       type: Function,
       required: true
     },
-    onDrop: {
-      type: Function,
+    draggedItem: {
+      type: String,
       required: true
     }
   },
@@ -225,23 +225,15 @@ export default {
 
       if(input.value === '') {
         this.isValidationMessageVisible = true;
+
         return false;
       } else {
         this.isValidationMessageVisible = false;
+
         this.showModal(modalMessage);
+
         return true;
       }
-    },
-    addRow() {
-      this.tableRows.push({
-        time: '',
-        cells: Array.from({ length: 7 }, () => ({ color: '#ffffff', text: '' }))
-      });
-      this.checkRows();
-    },
-    deleteRow(index) {
-      this.tableRows.splice(index, 1);
-      this.checkRows();
     },
     checkRows() {
       if(this.tableRows.length >= 1) {
@@ -255,6 +247,30 @@ export default {
       } else {
         this.canSave = false;
       }
+    },
+    addRow() {
+      this.tableRows.push({
+        time: '',
+        cells: Array.from({ length: 7 }, () => ({ color: '#ffffff', text: '' }))
+      });
+      this.checkRows();
+    },
+    deleteRow(index) {
+      this.tableRows.splice(index, 1);
+      this.checkRows();
+    },
+    onDrop(event, rowIndex, cellIndex) {
+      const cell = this.tableRows[rowIndex].cells[cellIndex];
+
+      if (cell.text !== '') {
+        cell.text += ' - ' + this.draggedItem;
+      } else {
+        cell.text = this.draggedItem;
+      }
+
+      this.checkRows();
+
+      this.draggedItem = null; // Очищаем значение после дропа
     },
     async getTable() {
       try {
