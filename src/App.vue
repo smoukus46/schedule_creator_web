@@ -105,7 +105,7 @@ export default {
     closeErrorModal() {
       this.isErrorModalVisible = false;
     },
-    async getInfo(elem, elemURL) {
+    async getInfo(listType, elemURL) {
       try {
 
         const response = await fetch(`/api/${elemURL}`, {
@@ -115,7 +115,11 @@ export default {
 
         if (response.ok === true) {
           const data = await response.json();
-          elem = data;
+
+          for(let index = 0; index < data.length; index++) {
+            listType.push(data[index]);
+          }
+
         } else {
           console.error('Ошибка при загрузке данных');
         }
@@ -147,7 +151,7 @@ export default {
         console.error('Ошибка при выполнении запроса', error);
       }
     },
-    async deleteData(elemURL, id) {
+    async deleteData(event, elemURL, id) {
       try {
 
         const response = await fetch(`/api/${elemURL}/${id}`, {
@@ -156,10 +160,9 @@ export default {
         });
 
         if (response.ok === true) {
-          const data = await response.json();
           event.target.parentNode.remove();
         } else {
-          console.error('Ошибка при добавлении данных');
+          console.error('Ошибка при удалении данных');
         }
       } catch (error) {
         console.error('Ошибка при выполнении запроса', error);
@@ -174,8 +177,8 @@ export default {
     }
   },
   mounted() {
-    //this.getInfo(this.workout_list, 'workoutList');
-    //this.getInfo(this.trainer_list, 'trainerList');
+    this.getInfo(this.trainer_list, 'trainerList');
+    this.getInfo(this.workout_list, 'workoutList');
   }
 }
 </script>

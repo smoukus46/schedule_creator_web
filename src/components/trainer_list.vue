@@ -24,7 +24,7 @@
               class="trainer-color"
               value="#ffffff"
           />
-          <button class="delete-trainer" @click="deleteData()"></button>
+          <button class="delete-trainer" @click="deleteData($event, 'trainerList', trainer.id)"></button>
         </li>
       </ul>
     </div>
@@ -49,6 +49,10 @@ export default {
       required: true
     },
     clearTooltipTimer: {
+      type: Function,
+      required: true
+    },
+    getInfo: {
       type: Function,
       required: true
     },

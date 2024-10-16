@@ -314,7 +314,9 @@ export default {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ rows: this.tableRows }),
+            body: JSON.stringify({
+              rows: this.tableRows
+            }),
           });
 
           if (response.ok) {

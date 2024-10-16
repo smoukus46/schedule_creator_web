@@ -18,7 +18,7 @@
             @dragstart="onDragStart($event, workout.name)"
         >
           {{ workout.name }}
-          <button class="delete-workout" @click="deleteData()"></button>
+          <button class="delete-workout" @click="deleteData($event, 'workoutList', workout.id)"></button>
         </li>
       </ul>
     </div>
