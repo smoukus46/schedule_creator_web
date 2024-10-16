@@ -67,7 +67,7 @@ export default {
       draggedItem: {name: null, color: null},
       tooltipTimer: null,
       workout_list: [],
-      trainer_list: [{name: 'Lera', color: null}],
+      trainer_list: [],
       tableRows: []
     }
   },

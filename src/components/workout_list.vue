@@ -15,7 +15,7 @@
             v-for="(workout, index) in workout_list"
             :key="index"
             :draggable="true"
-            @dragstart="onDragStart($event, workout)"
+            @dragstart="onDragStart($event, workout.name)"
         >
           {{ workout.name }}
           <button class="delete-workout" @click="deleteData()"></button>
