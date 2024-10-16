@@ -31,7 +31,7 @@ export default {
       required: true
     },
     draggedItem: {
-      type: String,
+      type: Object,
       required: true
     }
   }

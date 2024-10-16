@@ -15,9 +15,15 @@
             v-for="(trainer, index) in trainer_list"
             :key="index"
             :draggable="true"
-            @dragstart="onDragStart($event, trainer)"
+            @dragstart="onDragStart($event, trainer.name, trainer.color)"
         >
         {{ trainer.name }}
+          <input
+              @input="addTrainerColor($event, index)"
+              type="color"
+              class="trainer-color"
+              value="#ffffff"
+          />
           <button class="delete-trainer" @click="deleteData()"></button>
         </li>
       </ul>
@@ -55,6 +61,10 @@ export default {
       required: true
     },
     onDragStart: {
+      type: Function,
+      required: true
+    },
+    addTrainerColor: {
       type: Function,
       required: true
     },
@@ -219,5 +229,24 @@ input::-webkit-input-placeholder {
   border-radius: 4px;
   border: 1px solid black;
   z-index: 1;
+}
+
+.trainer-color {
+  -webkit-appearance: none; /* Отключение стандартного стиля (для WebKit-браузеров) */
+  width: 15px;
+  height: 15px;
+  border: 1px solid black;
+  border-radius: 2px;
+  padding: 0;
+  margin-left: -1px;
+  cursor: pointer;
+}
+
+.trainer-color::-webkit-color-swatch {
+  border: none;
+}
+
+.trainer-color::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
 </style>

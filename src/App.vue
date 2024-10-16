@@ -13,6 +13,7 @@
           :createLiElem="createLiElem"
           :deleteData="deleteData"
           :onDragStart="onDragStart"
+          :addTrainerColor="addTrainerColor"
       />
     </div>
     <div class="table">
@@ -63,10 +64,10 @@ export default {
       isLoadingModalVisible: false,
       isTrainerTooltipVisible: false,
       isWorkoutTooltipVisible: false,
-      draggedItem: null,
+      draggedItem: {name: null, color: null},
       tooltipTimer: null,
       workout_list: [],
-      trainer_list: [],
+      trainer_list: [{name: 'Lera', color: null}],
       tableRows: []
     }
   },
@@ -164,8 +165,12 @@ export default {
         console.error('Ошибка при выполнении запроса', error);
       }
     },
-    onDragStart(event, trainer) {
-      this.draggedItem = trainer.name;
+    onDragStart(event, objectName, objectColor) {
+      this.draggedItem.name = objectName;
+      this.draggedItem.color = objectColor;
+    },
+    addTrainerColor(event, index) {
+      this.trainer_list[index].color = event.target.value;
     }
   },
   mounted() {

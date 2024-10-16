@@ -107,13 +107,6 @@
               @dragover.prevent
               @drop="onDrop($event, rowIndex, cellIndex)"
           >
-            <input
-                @input="textareaColoring"
-                type="color"
-                class="trainer-color"
-                value="#ffffff"
-                v-model="cell.color"
-            />
             <textarea rows="3" v-model="cell.text" class="workout-textarea"></textarea>
           </td>
           <button class="row-btn" @click="deleteRow(rowIndex)">
@@ -148,7 +141,7 @@ export default {
       required: true
     },
     draggedItem: {
-      type: String,
+      type: Object,
       required: true
     }
   },
@@ -218,7 +211,8 @@ export default {
       }
     },
     textareaColoring(event) {
-      event.target.nextSibling.style.backgroundColor = event.target.value;
+      event.target.style.backgroundColor = this.draggedItem.color;
+      event.target.parentNode.style.backgroundColor = this.draggedItem.color;
     },
     showValidationError(modalMessage) {
       const input = document.querySelector('.datepicker-input');
@@ -263,9 +257,21 @@ export default {
       const cell = this.tableRows[rowIndex].cells[cellIndex];
 
       if (cell.text !== '') {
-        cell.text += ' - ' + this.draggedItem;
+        cell.text += ' - ' + this.draggedItem.name;
+        cell.color = this.draggedItem.color;
+
+        this.textareaColoring(event);
+
+        this.draggedItem.name = null;
+        this.draggedItem.color = null;
       } else {
-        cell.text = this.draggedItem;
+        cell.text = this.draggedItem.name;
+        cell.color = this.draggedItem.color;
+
+        this.textareaColoring(event);
+
+        this.draggedItem.name = null;
+        this.draggedItem.color = null;
       }
 
       this.checkRows();
@@ -559,15 +565,13 @@ th {
 }
 
 .workout-textarea {
-  width: 89%;
+  width: 100%;
   height: 100%;
-  max-width: 180px;
-  max-height: 600px;
   padding: 3px;
-  margin-left: 0;
+  margin-left: -3px;
   resize: none;
   border: none;
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
   outline: none;
   text-align: left;
   background: rgba(255, 255, 255, 0);
@@ -589,27 +593,6 @@ th {
   border-radius: 10px;
   background: rgb(205,103,195);
   background: linear-gradient(240deg, rgba(205,103,195,1) 0%, rgba(186,83,176,1) 70%);
-}
-
-.trainer-color {
-  -webkit-appearance: none; /* Отключение стандартного стиля (для WebKit-браузеров) */
-  border-left: none;
-  border-top: none;
-  border-bottom: none;
-  border-right: 1px solid black;
-  border-radius: 5px 0 0 5px;
-  padding: 0;
-  cursor: pointer;
-  width: 11px;
-  height: 63px;
-}
-
-.trainer-color::-webkit-color-swatch {
-  border: none;
-}
-
-.trainer-color::-webkit-color-swatch-wrapper {
-  padding: 0;
 }
 
 .row-btn {

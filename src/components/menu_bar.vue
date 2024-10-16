@@ -8,6 +8,7 @@
       :createLiElem="createLiElem"
       :deleteData="deleteData"
       :onDragStart="onDragStart"
+      :addTrainerColor="addTrainerColor"
   />
   <Workout_list
       :isWorkoutTooltipVisible="isWorkoutTooltipVisible"
@@ -57,6 +58,10 @@ export default {
       required: true
     },
     onDragStart: {
+      type: Function,
+      required: true
+    },
+    addTrainerColor: {
       type: Function,
       required: true
     },
