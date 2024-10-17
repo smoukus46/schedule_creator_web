@@ -33,8 +33,7 @@ class Workout(Base):
 class WorkoutTable(Base):
     __tablename__ = "workoutstable"
 
-    id = Column(Integer, primary_key=True, index=True)
-    month_year = Column(String)
+    month_year = Column(String, primary_key=True, index=True)
     table_data = Column(JSON)
 
 

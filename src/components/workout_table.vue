@@ -164,7 +164,7 @@ export default {
         return `${this.months[this.selectedMonth]} ${this.selectedYear}`;
       }
       return "";
-    },
+    }
   },
   methods: {
     async downloadSchedule(url) {
@@ -210,9 +210,27 @@ export default {
         this.showPopup = false;
       }
     },
-    textareaColoring(event) {
-      event.target.style.backgroundColor = this.draggedItem.color;
-      event.target.parentNode.style.backgroundColor = this.draggedItem.color;
+    textareaColoring(event='') {
+      if (event.type === 'drop') {
+
+        if(this.draggedItem.color) {
+          event.target.style.backgroundColor = this.draggedItem.color;
+          event.target.parentNode.style.backgroundColor = this.draggedItem.color;
+        }
+      } else {
+
+        const trList = document.getElementsByTagName('tr');
+
+        for(let index = 0; index < this.tableRows[index].cells.length; index++) {
+
+          for(let i = 0; i < this.tableRows[index].cells.length; i++) {
+            console.log(this.tableRows[index].cells[i].color)
+            console.log(trList[index + 1].cells[i + 1].style.backgroundColor)
+
+            trList[index + 1].cells[i + 1].style.backgroundColor = this.tableRows[index].cells[i].color;
+          }
+        }
+      }
     },
     showValidationError(modalMessage) {
       const input = document.querySelector('.datepicker-input');
@@ -245,7 +263,7 @@ export default {
     addRow() {
       this.tableRows.push({
         time: '',
-        cells: Array.from({ length: 7 }, () => ({ color: '#ffffff', text: '' }))
+        cells: Array.from({ length: 7 }, () => ({ color: '#ffffff31', text: '' }))
       });
       this.checkRows();
     },
@@ -258,7 +276,9 @@ export default {
 
       if (cell.text !== '') {
         cell.text += ' - ' + this.draggedItem.name;
-        cell.color = this.draggedItem.color;
+        if (this.draggedItem.color) {
+          cell.color = this.draggedItem.color;
+        }
 
         this.textareaColoring(event);
 
@@ -275,8 +295,6 @@ export default {
       }
 
       this.checkRows();
-
-      this.draggedItem = null; // Очищаем значение после дропа
     },
     async getTable() {
       try {
@@ -289,7 +307,13 @@ export default {
 
             this.closeLoadingModal();
 
-            this.tableRows = data.rows; // Заполняем таблицу полученными данными
+            for(let index = 0; index < data.table_data.length; index++) {
+              this.tableRows.push(data.table_data[index]);
+            }
+
+            await this.$nextTick(() => {
+              this.textareaColoring();
+            });
           } else {
             this.closeLoadingModal();
             this.showErrorModal('Ошибка при получении данных');
@@ -299,7 +323,6 @@ export default {
         }
       } catch (error) {
         this.closeLoadingModal();
-        this.showErrorModal(error);
 
         console.error('Ошибка:', error, error.statusCode);
       }
@@ -357,7 +380,6 @@ export default {
   width: 100%;
   height: 930px;
   overflow-x: hidden;
-  background-image: url("https://avatars.mds.yandex.net/get-sprav-products/13074932/2a0000018e7a6f0a4300154eddee4449b6e7/M_height");
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -555,7 +577,7 @@ td {
   max-height: 60px;
   padding: 10px;
   border-radius: 5px;
-  background: rgba(255, 255, 255, 0.192);
+  background-color: rgba(255, 255, 255, 0.192);
   backdrop-filter: blur(10px);
   outline: none;
   box-shadow: -2px 2px 5px 0 rgba(5, 5, 5, 0.5);

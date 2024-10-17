@@ -35,6 +35,11 @@ def get_workouts(db: Session = Depends(get_db)):
     return db.query(Workout).all()
 
 
+@app.get("/api/get-table/{month_year}")
+def get_table(month_year, db: Session = Depends(get_db)):
+    return db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first()
+
+
 @app.post("/api/trainerList")
 def add_trainer(data=Body(), db: Session = Depends(get_db)):
     trainer = Trainer(name=data["name"])
@@ -51,6 +56,15 @@ def add_workout(data=Body(), db: Session = Depends(get_db)):
     db.commit()
     db.refresh(workout)
     return workout
+
+
+@app.post("/api/save-table/{month_year}")
+def add_workout_table_data(month_year: str, data=Body(), db: Session = Depends(get_db)):
+    table_data = WorkoutTable(month_year=month_year, table_data=data["rows"])
+    db.add(table_data)
+    db.commit()
+    db.refresh(table_data)
+    return table_data
 
 
 @app.delete("/api/trainerList/{id}")

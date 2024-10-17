@@ -68,7 +68,7 @@ export default {
       tooltipTimer: null,
       workout_list: [],
       trainer_list: [],
-      tableRows: []
+      tableRows: [],
     }
   },
   methods: {
