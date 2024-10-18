@@ -1,8 +1,14 @@
 from database import *
 from sqlalchemy.orm import Session
+
 from fastapi import Depends, FastAPI, Body
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
+
+from openpyxl import load_workbook
+from openpyxl.styles import PatternFill, Border, Side, Font
+
+import os
 
 
 Base.metadata.create_all(bind=engine)
@@ -43,6 +49,19 @@ def get_table(month_year, db: Session = Depends(get_db)):
         return JSONResponse({"message": "Расписания на такую дату не существует"})
 
 
+@app.get("/api/download-shedule")
+def download_file():
+    file_path = './dist/Расписание_тренировок.xlsx'
+    if os.path.exists(file_path):
+        return FileResponse(
+            path=file_path,
+            filename='Расписание_тренировок.xlsx',
+            media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+    else:
+        return {"error": "Файл не найден"}
+
+
 @app.post("/api/trainerList")
 def add_trainer(data=Body(), db: Session = Depends(get_db)):
      trainer = Trainer(name=data["name"])
@@ -50,6 +69,7 @@ def add_trainer(data=Body(), db: Session = Depends(get_db)):
      db.commit()
      db.refresh(trainer)
      return trainer
+
 
 @app.post("/api/workoutList")
 def add_workout(data=Body(), db: Session = Depends(get_db)):
@@ -67,6 +87,9 @@ def add_workout_table_data(month_year: str, data=Body(), db: Session = Depends(g
         db.add(table_data)
         db.commit()
         db.refresh(table_data)
+
+        excel_writing(month_year, data["rows"])
+
         return table_data
     else:
         return JSONResponse(content={"message": "Расписание на такой месяц уже сущетствует"})
@@ -79,6 +102,9 @@ def edit_workout_table_data(month_year: str, data=Body(), db: Session = Depends(
     table_data.table_data = data["rows"]
     db.commit()
     db.refresh(table_data)
+
+    excel_writing(month_year, data["rows"])
+
     return table_data
 
 
@@ -104,3 +130,69 @@ def delete_workout(id, db: Session = Depends(get_db)):
     db.delete(workout)
     db.commit()
     return workout
+
+
+def excel_writing(month_year, workbook_data):
+    file_path = os.path.abspath('./src/Расписание_тренировок.xlsx')
+    wb = load_workbook(file_path)
+
+    if month_year not in wb.sheetnames:
+        wb.create_sheet(month_year)
+
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    workbook_list = wb[month_year]
+
+    workbook_list.row_dimensions[1].height = 20
+
+    headers = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье', '']
+
+    row_index = 0
+    cell_index = 0
+
+    for data in workbook_data:
+        for key, value in data.items():
+            if key == "cells":
+                for cell in value:
+
+                    if cell_index < 7:
+                        cell_index += 1
+                    else:
+                        cell_index = 1
+
+                    headers_coordinate = workbook_list['B1':'H1'][0][cell_index - 1].coordinate
+    
+                    workbook_list[headers_coordinate] = headers[cell_index - 1]
+                    workbook_list[headers_coordinate].border = thin_border
+                    workbook_list[headers_coordinate].font = Font(bold=True)
+
+                    workbook_coordinate = workbook_list['A2':'H13'][row_index][cell_index].coordinate
+
+                    workbook_list[workbook_coordinate].border = thin_border
+                    workbook_list[workbook_coordinate] = cell['text']
+                    workbook_list[workbook_coordinate].fill = PatternFill('solid', fgColor=cell['color'][1:])
+
+                    workbook_list.column_dimensions[workbook_coordinate[0]].width = 25
+            else:
+                time_header_coordinate = workbook_list['A1':'A1'][0][0].coordinate
+
+                workbook_list[time_header_coordinate] = headers[7]
+                workbook_list[time_header_coordinate].border = thin_border
+
+                time_cell_coord = workbook_list['A2':'H13'][row_index][0].coordinate
+
+                workbook_list[time_cell_coord] = data[key]
+                workbook_list[time_cell_coord].border = thin_border
+                workbook_list[time_cell_coord].font = Font(bold=True)
+
+        workbook_list.row_dimensions[row_index + 2].height = 40
+
+        row_index += 1
+
+    wb.save(file_path)
+    wb.close()

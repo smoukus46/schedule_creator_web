@@ -28,7 +28,7 @@
             />
             <b>Сохранить созданное расписание</b>
           </button>
-          <button class="table-btn" @click="downloadSchedule('/Расписание_тренировок_2024.xlsx')">
+          <button class="table-btn" @click="downloadSchedule()">
             <img
                 class="btn-icon"
                 src="../assets/export.svg"
@@ -173,9 +173,29 @@ export default {
     }
   },
   methods: {
-    async downloadSchedule(url) {
+    async downloadSchedule() {
       try {
-        const response = await fetch(url);
+        const response = await fetch(`/api/download-shedule`, {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error('Ошибка при загрузке файла');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Расписание_тренировок.xlsx';
+
+        document.body.appendChild(a);
+        a.click();
+
+        a.remove();
+
+        /*const response = await fetch(url);
 
         if (!response.ok) {
           throw new Error('Ошибка при получении файла');
@@ -191,7 +211,7 @@ export default {
 
         downloadLink.click();
 
-        URL.revokeObjectURL(downloadLink.href);
+        URL.revokeObjectURL(downloadLink.href);*/
       } catch (error) {
         console.error('Ошибка при загрузке файлов', error)
       }
