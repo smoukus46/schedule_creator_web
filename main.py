@@ -82,7 +82,6 @@ def edit_workout_table_data(month_year: str, data=Body(), db: Session = Depends(
     return table_data
 
 
-
 @app.delete("/api/trainerList/{id}")
 def delete_trainer(id, db: Session = Depends(get_db)):
     trainer = db.query(Trainer).filter(Trainer.id == id).first()

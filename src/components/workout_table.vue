@@ -104,10 +104,16 @@
           <td
               v-for="(cell, cellIndex) in row.cells"
               :key="cellIndex"
-              @dragover.prevent
-              @drop="onDrop($event, rowIndex, cellIndex)"
           >
-            <textarea rows="3" v-model="cell.text" class="workout-textarea"></textarea>
+            <textarea
+                rows="3"
+                v-model="cell.text"
+                class="workout-textarea"
+                @dragenter="onDragEnter"
+                @dragover="onDragOver"
+                @dragleave="onDragLeave"
+                @drop="onDrop($event, rowIndex, cellIndex)"
+            ></textarea>
           </td>
           <button class="row-btn" @click="deleteRow(rowIndex)">
             <img id="delete-row-btn" src="../assets/white-xmark.svg" width="22" height="22"/>
@@ -270,6 +276,10 @@ export default {
       this.checkRows();
     },
     onDrop(event, rowIndex, cellIndex) {
+      event.preventDefault();
+
+      event.target.parentNode.classList.remove('highlight');
+
       const cell = this.tableRows[rowIndex].cells[cellIndex];
 
       if (cell.text !== '') {
@@ -293,6 +303,16 @@ export default {
       }
 
       this.checkRows();
+    },
+    onDragEnter(event) {
+      event.preventDefault();
+      event.target.parentNode.classList.add('highlight');
+    },
+    onDragOver(event) {
+      event.preventDefault();
+    },
+    onDragLeave(event) {
+      event.target.parentNode.classList.remove('highlight');
     },
     async getTable() {
       try {
@@ -702,6 +722,11 @@ th {
 .time option {
   background-color: #870b79;
   color: #fff;
+}
+
+.highlight {
+  border-color: green;
+  background-color: lightgreen;
 }
 
 </style>
