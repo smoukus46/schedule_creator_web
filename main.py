@@ -37,17 +37,19 @@ def get_workouts(db: Session = Depends(get_db)):
 
 @app.get("/api/get-table/{month_year}")
 def get_table(month_year, db: Session = Depends(get_db)):
-    return db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first()
+    if db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first() != None:
+        return db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first()
+    else:
+        return JSONResponse({"message": "Расписания на такую дату не существует"})
 
 
 @app.post("/api/trainerList")
 def add_trainer(data=Body(), db: Session = Depends(get_db)):
-    trainer = Trainer(name=data["name"])
-    db.add(trainer)
-    db.commit()
-    db.refresh(trainer)
-    return trainer
-
+     trainer = Trainer(name=data["name"])
+     db.add(trainer)
+     db.commit()
+     db.refresh(trainer)
+     return trainer
 
 @app.post("/api/workoutList")
 def add_workout(data=Body(), db: Session = Depends(get_db)):
@@ -60,11 +62,25 @@ def add_workout(data=Body(), db: Session = Depends(get_db)):
 
 @app.post("/api/save-table/{month_year}")
 def add_workout_table_data(month_year: str, data=Body(), db: Session = Depends(get_db)):
-    table_data = WorkoutTable(month_year=month_year, table_data=data["rows"])
-    db.add(table_data)
+    if db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first() == None:
+        table_data = WorkoutTable(month_year=month_year, table_data=data["rows"])
+        db.add(table_data)
+        db.commit()
+        db.refresh(table_data)
+        return table_data
+    else:
+        return JSONResponse(content={"message": "Расписание на такой месяц уже сущетствует"})
+
+
+@app.put("/api/save-table/{month_year}")
+def edit_workout_table_data(month_year: str, data=Body(), db: Session = Depends(get_db)):
+    table_data = db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first()
+
+    table_data.table_data = data["rows"]
     db.commit()
     db.refresh(table_data)
     return table_data
+
 
 
 @app.delete("/api/trainerList/{id}")

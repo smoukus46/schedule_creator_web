@@ -224,8 +224,6 @@ export default {
         for(let index = 0; index < this.tableRows[index].cells.length; index++) {
 
           for(let i = 0; i < this.tableRows[index].cells.length; i++) {
-            console.log(this.tableRows[index].cells[i].color)
-            console.log(trList[index + 1].cells[i + 1].style.backgroundColor)
 
             trList[index + 1].cells[i + 1].style.backgroundColor = this.tableRows[index].cells[i].color;
           }
@@ -345,20 +343,53 @@ export default {
           if (response.ok) {
             const result = await response.json();
 
-            this.closeLoadingModal();
-            this.showErrorModal('Данные успешно отправлены');
+            if (result.message === "Расписание на такой месяц уже сущетствует") {
 
-            console.log('Данные успешно отправлены:', result);
-          } else {
-            this.closeLoadingModal();
-            this.showErrorModal('Ошибка при отправке данных');
+              await this.editTable();
 
-            console.error('Ошибка при отправке данных:', response.statusText);
+            } else {
+              this.closeLoadingModal();
+              this.showErrorModal('Данные успешно отправлены');
+
+              console.log('Данные успешно отправлены:', result);
+            }
           }
         }
       } catch (error) {
         this.closeLoadingModal();
+
         this.showErrorModal(error);
+
+        console.error('Ошибка:', error);
+      }
+    },
+    async editTable() {
+      try {
+        const input = document.querySelector('.datepicker-input');
+
+        const response = await fetch(`/api/save-table/${input.value}`, {
+
+          method: "PUT",
+          headers: {"Accept": "application/json", "Content-Type": "application/json"},
+          body: JSON.stringify({
+            rows: this.tableRows
+          })
+        });
+
+        if (response.ok === true) {
+          const data = await response.json();
+
+          this.closeLoadingModal();
+
+          this.showErrorModal('Данные успешно отправлены');
+        } else {
+          this.closeLoadingModal();
+          this.showErrorModal('Ошибка при отправке данных');
+
+          console.error('Ошибка при отправке данных:', response.statusText);
+        }
+      } catch (error) {
+        this.closeLoadingModal();
 
         console.error('Ошибка:', error);
       }
