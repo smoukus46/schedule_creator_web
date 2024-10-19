@@ -175,7 +175,7 @@ export default {
   methods: {
     async downloadSchedule() {
       try {
-        const response = await fetch(`/api/download-shedule`, {
+        const response = await fetch('/api/download-schedule', {
           method: "GET",
         });
 
@@ -194,24 +194,6 @@ export default {
         a.click();
 
         a.remove();
-
-        /*const response = await fetch(url);
-
-        if (!response.ok) {
-          throw new Error('Ошибка при получении файла');
-        }
-
-        const blob = await response.blob();
-
-        const downloadLink = document.createElement('a');
-        downloadLink.href = URL.createObjectURL(blob);
-
-        const filename = url.split('/').pop();
-        downloadLink.download = filename;
-
-        downloadLink.click();
-
-        URL.revokeObjectURL(downloadLink.href);*/
       } catch (error) {
         console.error('Ошибка при загрузке файлов', error)
       }

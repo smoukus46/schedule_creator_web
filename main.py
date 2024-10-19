@@ -49,9 +49,9 @@ def get_table(month_year, db: Session = Depends(get_db)):
         return JSONResponse({"message": "Расписания на такую дату не существует"})
 
 
-@app.get("/api/download-shedule")
+@app.get("/api/download-schedule")
 def download_file():
-    file_path = './dist/Расписание_тренировок.xlsx'
+    file_path = os.path.abspath('./src/Расписание_тренировок.xlsx')
     if os.path.exists(file_path):
         return FileResponse(
             path=file_path,
@@ -64,11 +64,11 @@ def download_file():
 
 @app.post("/api/trainerList")
 def add_trainer(data=Body(), db: Session = Depends(get_db)):
-     trainer = Trainer(name=data["name"])
-     db.add(trainer)
-     db.commit()
-     db.refresh(trainer)
-     return trainer
+    trainer = Trainer(name=data["name"])
+    db.add(trainer)
+    db.commit()
+    db.refresh(trainer)
+    return trainer
 
 
 @app.post("/api/workoutList")
@@ -82,7 +82,7 @@ def add_workout(data=Body(), db: Session = Depends(get_db)):
 
 @app.post("/api/save-table/{month_year}")
 def add_workout_table_data(month_year: str, data=Body(), db: Session = Depends(get_db)):
-    if db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first() == None:
+    if db.query(WorkoutTable).filter(WorkoutTable.month_year == month_year).first() is None:
         table_data = WorkoutTable(month_year=month_year, table_data=data["rows"])
         db.add(table_data)
         db.commit()
@@ -183,6 +183,7 @@ def excel_writing(month_year, workbook_data):
 
                 workbook_list[time_header_coordinate] = headers[7]
                 workbook_list[time_header_coordinate].border = thin_border
+                workbook_list.column_dimensions[time_header_coordinate[0]].width = 15
 
                 time_cell_coord = workbook_list['A2':'H13'][row_index][0].coordinate
 
