@@ -134,10 +134,10 @@ li:hover {
 input {
   outline: none;
   width: 275px;
-  height: 23px;
+  height: 24px;
   margin-left: 6px;
   text-align: center;
-  font-size: 19px;
+  font-size: 18px;
   font-family: Rubik, sans-serif;
   border-radius: 3px;
   border: 0;

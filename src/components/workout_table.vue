@@ -430,7 +430,7 @@ export default {
 
 <style scoped>
 .table-space {
-  width: 100%;
+  width: 98%;
   height: 930px;
   overflow-x: hidden;
   background-position: center;
@@ -460,7 +460,7 @@ export default {
 .table-btn {
   font-family: Rubik, sans-serif;
   font-size: 1em;
-  width: 365px;
+  width: 390px;
   margin: 20px;
   height: 30px;
   position: relative;
