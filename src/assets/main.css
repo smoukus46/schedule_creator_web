@@ -9,7 +9,7 @@ body {
   background: radial-gradient(circle, rgba(191,189,191,1) 30%, rgba(214,212,214,1) 100%);
   min-height: 100vh;
   font-family: "Rubik Light", sans-serif;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
