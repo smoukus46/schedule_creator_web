@@ -709,7 +709,7 @@ th {
 }
 
 .time {
-  width: 107px;
+  width: 117px;
   border: none;
   outline: none;
   padding: 0;

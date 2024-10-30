@@ -1,0 +1,13 @@
+# Dockerfile for FastAPI Backend
+
+FROM python:3.10-slim
+
+WORKDIR /schedule_creator_web/backend
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY --from=frontend-image /usr/share/nginx/html/assets /schedule_creator_web/assets
+
+COPY . .
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

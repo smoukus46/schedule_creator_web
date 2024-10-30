@@ -132,20 +132,22 @@ export default {
         const input = event.target.previousSibling;
         const value = input.value;
 
-        const response = await fetch(`/api/${elemURL}`, {
+        if (value) {
+          const response = await fetch(`/api/${elemURL}`, {
           method: "POST",
           headers: { "Accept": "application/json", "Content-Type": "application/json" },
           body: JSON.stringify({
             name: value
-          })
-        });
+            })
+          });
 
-        if (response.ok === true) {
-          const data = await response.json();
-          listType.push(data);
-          input.value = '';
-        } else {
-          console.error('Ошибка при добавлении данных');
+          if (response.ok === true) {
+            const data = await response.json();
+            listType.push(data);
+            input.value = '';
+          } else {
+            console.error('Ошибка при добавлении данных');
+          }
         }
       } catch (error) {
         console.error('Ошибка при выполнении запроса', error);

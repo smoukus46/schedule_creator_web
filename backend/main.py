@@ -15,7 +15,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-app.mount("/assets", StaticFiles(directory='dist/assets'), name='static')
+# Для запуска локально раскомментировать эту строку и выполнить npm run build
+# app.mount("/assets", StaticFiles(directory='../frontend/dist/assets'), name='static')
+
+# Для запуска на удаленном сервере раскомментировать эту строку
+app.mount("/assets", StaticFiles(directory='/usr/share/nginx/html/assets'), name='static')
 
 
 def get_db():
@@ -28,7 +32,11 @@ def get_db():
 
 @app.get("/")
 def main():
-    return FileResponse("dist/index.html")
+    # При локальном запуске раскомментировать эту строку
+    # return FileResponse("../frontend/dist/index.html")
+
+    # При запуске на удаленном сервере раскомментировать эту строку
+    return FileResponse("/usr/share/nginx/html/index.html")
 
 
 @app.get("/api/trainerList")
@@ -51,7 +59,8 @@ def get_table(month_year, db: Session = Depends(get_db)):
 
 @app.get("/api/download-schedule")
 def download_file():
-    file_path = os.path.abspath('./src/Расписание_тренировок.xlsx')
+    file_path = os.path.abspath('../frontend/src/Расписание_тренировок.xlsx')
+
     if os.path.exists(file_path):
         return FileResponse(
             path=file_path,
@@ -64,19 +73,21 @@ def download_file():
 
 @app.post("/api/trainerList")
 def add_trainer(data=Body(), db: Session = Depends(get_db)):
-    trainer = Trainer(name=data["name"])
-    db.add(trainer)
-    db.commit()
-    db.refresh(trainer)
+    if data["name"] != "":
+        trainer = Trainer(name=data["name"])
+        db.add(trainer)
+        db.commit()
+        db.refresh(trainer)
     return trainer
 
 
 @app.post("/api/workoutList")
 def add_workout(data=Body(), db: Session = Depends(get_db)):
-    workout = Workout(name=data["name"])
-    db.add(workout)
-    db.commit()
-    db.refresh(workout)
+    if data["name"] != "":
+        workout = Workout(name=data["name"])
+        db.add(workout)
+        db.commit()
+        db.refresh(workout)
     return workout
 
 
@@ -133,7 +144,7 @@ def delete_workout(id, db: Session = Depends(get_db)):
 
 
 def excel_writing(month_year, workbook_data):
-    file_path = os.path.abspath('./src/Расписание_тренировок.xlsx')
+    file_path = os.path.abspath('../frontend/src/Расписание_тренировок.xlsx')
     wb = load_workbook(file_path)
 
     if month_year not in wb.sheetnames:

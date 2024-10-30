@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: BackDocker
+    volumes:
+      - shared-data:/usr/share/nginx/html
+      - db-data:/schedule_creator_web/backend
+      - /root/schedule_creator_web/frontend/src/Расписание_тренировок.xlsx:/schedule_creator_web/frontend/src/Расписание_тренировок.xlsx
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: FrontDocker
+    image: frontend-image
+    container_name: vue-frontend
+    #ports:
+      #- "80:80"
+    volumes:
+      - shared-data:/usr/share/nginx/html
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  shared-data:
+  db-data:
