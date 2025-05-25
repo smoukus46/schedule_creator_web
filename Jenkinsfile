@@ -71,7 +71,7 @@ pipeline {
                                 "cd \$PROJECT_DIR && \\
                                 docker-compose down && \\
                                 docker system prune -af && \\
-                                docker volume rm schedule_creator_web_shared-data || true && \\
+                                docker volume rm schedule_creator_shared-data || true && \\
                                 docker-compose build --no-cache && \\
                                 docker-compose up -d"
                         """
