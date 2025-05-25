@@ -19,65 +19,50 @@ pipeline {
             }
         }
 
-        stage('Prepare Environment') {
-            steps {
-                // Устанавливаем кодировку UTF-8 для русских символов
-                bat 'chcp 65001 > nul'
-
-                // Предварительно добавляем host key в кэш
-                script {
-                    try {
-                        bat """
-                            echo y | "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh root@${SERVER_IP} "echo Adding host to known hosts"
-                        """
-                    } catch (Exception e) {
-                        echo "Игнорируем ошибку добавления host key"
-                    }
-                }
-            }
-        }
-
        stage('Prepare Server') {
             steps {
                 withCredentials([sshUserPrivateKey(
                     credentialsId: 'ubuntu-server-key',
                     keyFileVariable: 'SSH_KEY'
+                    usernameVariable: 'SSH_USER'
                 )]) {
                     script {
-                        // Используем plink вместо ssh-agent
-                        bat """
-                            set PLINK_PATH=C:\\Program Files\\PuTTY\\plink.exe
-                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh root@${SERVER_IP} "
-                            mkdir -p ${PROJECT_DIR} &&
-                            rm -rf ${PROJECT_DIR}/*
-                            "
+                        // Создаем директорию на сервере
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                -i "${SSH_KEY}" \
+                                ${SSH_USER}@${SERVER_IP} \
+                                "mkdir -p ${PROJECT_DIR} && chmod 777 ${PROJECT_DIR}"
                         """
 
-                        // Копируем файлы через pscp
-                        bat """
-                            set PSCP_PATH=C:\\Program Files\\PuTTY\\pscp.exe
-                            "%PSCP_PATH%" -i "%SSH_KEY%" -r . root@${SERVER_IP}:${PROJECT_DIR}
+                        // Копируем файлы
+                        sh """
+                            scp -o StrictHostKeyChecking=no \
+                                -i "${SSH_KEY}" \
+                                -r . \
+                                ${SSH_USER}@${SERVER_IP}:${PROJECT_DIR}
                         """
                     }
                 }
             }
         }
 
-        stage('Build & Deploy') {
+        stage('Deploy with Docker') {
             steps {
                 withCredentials([sshUserPrivateKey(
                     credentialsId: 'ubuntu-server-key',
-                    keyFileVariable: 'SSH_KEY'
+                    keyFileVariable: 'SSH_KEY',
+                    usernameVariable: 'SSH_USER'
                 )]) {
                     script {
-                        bat """
-                            set PLINK_PATH=C:\\Program Files\\PuTTY\\plink.exe
-                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh root@${SERVER_IP} "
-                            cd ${PROJECT_DIR} &&
-                            docker-compose down &&
-                            docker-compose build --no-cache &&
-                            docker-compose up -d
-                            "
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                -i "${SSH_KEY}" \
+                                ${SSH_USER}@${SERVER_IP} \
+                                "cd ${PROJECT_DIR} && \
+                                docker-compose down && \
+                                docker-compose build --no-cache && \
+                                docker-compose up -d"
                         """
                     }
                 }
@@ -87,14 +72,11 @@ pipeline {
 
     post {
         success {
-            bat 'chcp 65001 > nul && echo "Deploy finished successful!"'
-            bat """
-                chcp 65001 > nul && echo "Frontend: http://${SERVER_IP}:3000" &&
-                echo "Backend: http://${SERVER_IP}:8000"
-            """
+            echo "Deploy finished successful!"
+            echo "Backend enable on: http://${SERVER_IP}:8000"
         }
         failure {
-            bat 'chcp 65001 > nul && echo "DeployError"'
+            echo "DeployError"
         }
     }
 }
