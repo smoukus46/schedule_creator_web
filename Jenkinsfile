@@ -5,7 +5,7 @@ pipeline {
         // Настройки сервера
         SERVER_IP = '195.133.66.33'
         SSH_CREDS = 'ubuntu-server-key'
-        PROJECT_DIR = '/root/schedule_creator_web'
+        PROJECT_DIR = '/root/schedule_creator'
         BACKEND_PORT = '8000'
 
         // Путь к Git Bash
