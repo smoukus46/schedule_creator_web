@@ -65,13 +65,14 @@ pipeline {
                     script {
                         writeFile file: 'deploy_docker.sh', text: """#!/bin/bash
                             chmod 600 "\$SSH_KEY"
-                            ssh -o StrictHostKeyChecking=no \\
-                                -i "\$SSH_KEY" \\
-                                "\$SSH_USER"@"\$SERVER_IP" \\
-                                "cd \$PROJECT_DIR && \\
-                                docker-compose down && \\
-                                docker-compose build --no-cache && \\
-                                docker-compose up -d"
+                            ssh -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} "
+                                cd ${PROJECT_DIR} &&
+                                docker-compose down --remove-orphans &&
+                                docker system prune -af &&  # Очистка кеша Docker
+                                git pull origin main &&    # Обновление кода
+                                docker-compose build --no-cache &&
+                                docker-compose up -d
+                            "
                         """
                         bat "\"%GIT_BASH%\" deploy_docker.sh"
                     }
