@@ -3,12 +3,13 @@ pipeline {
 
     environment {
         // Настройки сервера
-        SERVER_IP = '195.133.66.33'  // Ваш IP сервера Ubuntu
-        SSH_CREDS = 'ubuntu-server-key' // ID SSH-ключей из Jenkins
-        PROJECT_DIR = '/root/schedule_creator' // Директория на сервере
-
-        // Переменные окружения (адаптируйте под ваши нужды)
+        SERVER_IP = '195.133.66.33'
+        SSH_CREDS = 'ubuntu-server-key'
+        PROJECT_DIR = '/root/schedule_creator'
         BACKEND_PORT = '8000'
+
+        // Путь к Git Bash
+        GIT_BASH = 'C:\\Program Files\\Git\\bin\\bash.exe'
     }
 
     stages {
@@ -19,7 +20,7 @@ pipeline {
             }
         }
 
-       stage('Prepare Server') {
+        stage('Prepare Server') {
             steps {
                 withCredentials([sshUserPrivateKey(
                     credentialsId: 'ubuntu-server-key',
@@ -27,20 +28,23 @@ pipeline {
                     usernameVariable: 'SSH_USER'
                 )]) {
                     script {
-                        // Создаем директорию на сервере
-                        sh """
+                        // Используем Git Bash для выполнения команд
+                        bat """
+                            "%GIT_BASH%" -c '
                             ssh -o StrictHostKeyChecking=no \
                                 -i "${SSH_KEY}" \
                                 ${SSH_USER}@${SERVER_IP} \
                                 "mkdir -p ${PROJECT_DIR} && chmod 777 ${PROJECT_DIR}"
+                            '
                         """
 
-                        // Копируем файлы
-                        sh """
+                        bat """
+                            "%GIT_BASH%" -c '
                             scp -o StrictHostKeyChecking=no \
                                 -i "${SSH_KEY}" \
-                                -r . \
+                                -r ./* \
                                 ${SSH_USER}@${SERVER_IP}:${PROJECT_DIR}
+                            '
                         """
                     }
                 }
@@ -55,7 +59,8 @@ pipeline {
                     usernameVariable: 'SSH_USER'
                 )]) {
                     script {
-                        sh """
+                        bat """
+                            "%GIT_BASH%" -c '
                             ssh -o StrictHostKeyChecking=no \
                                 -i "${SSH_KEY}" \
                                 ${SSH_USER}@${SERVER_IP} \
@@ -63,6 +68,7 @@ pipeline {
                                 docker-compose down && \
                                 docker-compose build --no-cache && \
                                 docker-compose up -d"
+                            '
                         """
                     }
                 }
