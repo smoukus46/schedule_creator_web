@@ -1,6 +1,6 @@
 <template>
   <div class="trainer-div">
-    <input class="add-trainer-input" placeholder="Введите имя тренерассс">
+    <input class="add-trainer-input" placeholder="Введите имя тренера">
     <button
         class="add-trainer"
         @mouseenter="startTooltipTimer('trainer')"
