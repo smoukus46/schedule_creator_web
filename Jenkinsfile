@@ -16,8 +16,24 @@ pipeline {
             steps {
                 git branch: 'main',
                      url: 'https://github.com/smoukus46/schedule_creator_web.git'
-                // Исправляем кодировку для русских символов
+            }
+        }
+
+        stage('Prepare Environment') {
+            steps {
+                // Устанавливаем кодировку UTF-8 для русских символов
                 bat 'chcp 65001 > nul'
+
+                // Предварительно добавляем host key в кэш
+                script {
+                    try {
+                        bat """
+                            echo y | "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh ubuntu@${SERVER_IP} "echo Adding host to known hosts"
+                        """
+                    } catch (Exception e) {
+                        echo "Игнорируем ошибку добавления host key"
+                    }
+                }
             }
         }
 
