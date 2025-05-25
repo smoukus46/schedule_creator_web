@@ -2,7 +2,7 @@
 
 FROM node:20 as build-stage
 
-WORKDIR /schedule_creator_web/frontend
+WORKDIR /schedule_creator/frontend
 COPY package*.json ./
 RUN npm install
 COPY . .
@@ -15,7 +15,7 @@ FROM nginx:stable-alpine
 RUN mkdir -p /usr/share/nginx/html
 
 # Копируем содержимое dist из этапа сборки
-COPY --from=build-stage /schedule_creator_web/frontend/dist/ /usr/share/nginx/html/
+COPY --from=build-stage /schedule_creator/frontend/dist/ /usr/share/nginx/html/
 
 # Expose port 80
 EXPOSE 80
