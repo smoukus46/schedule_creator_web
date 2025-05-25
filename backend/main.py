@@ -208,4 +208,3 @@ def excel_writing(month_year, workbook_data):
 
     wb.save(file_path)
     wb.close()
-

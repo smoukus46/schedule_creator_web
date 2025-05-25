@@ -8,7 +8,7 @@
         @click="createLiElem(trainer_list, 'trainerList')">
       &#x2713;
     </button>
-    <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренера</div>
+    <div v-if="isTrainerTooltipVisible" class="add-trainer-tooltip">Добавить тренерааа</div>
     <div class="trainer-list">
       <ul id="trainerUL">
         <li
