@@ -44,6 +44,8 @@ pipeline {
                                 -r ./* \\
                                 "\$SSH_USER"@"\$SERVER_IP":"\$PROJECT_DIR"
                         """
+                        bat 'type prepare_server.sh' // Для отладки
+                        bat "\"%GIT_BASH%\" prepare_server.sh"
                     }
                 }
             }
