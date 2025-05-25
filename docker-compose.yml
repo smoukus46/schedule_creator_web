@@ -19,7 +19,7 @@ services:
       context: ./backend
       dockerfile: BackDocker
     volumes:
-      - shared-data:/schedule_creator_web/frontend/dist/:/usr/share/nginx/html
+      - shared-data:/usr/share/nginx/html
       - db-data:/schedule_creator_web/backend
       - /root/schedule_creator_web/frontend/src/Расписание_тренировок.xlsx:/schedule_creator_web/frontend/src/Расписание_тренировок.xlsx
     container_name: fastapi-backend
