@@ -34,11 +34,9 @@ pipeline {
                     script {
                         bat """
                             "%GIT_BASH%" -c '
+                            chmod 600 "${SSH_KEY}" && \
                             ssh -o StrictHostKeyChecking=no -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} \
                                 "mkdir -p ${PROJECT_DIR}"
-
-                            scp -o StrictHostKeyChecking=no -i "${SSH_KEY}" -r ./* \
-                                ${SSH_USER}@${SERVER_IP}:${PROJECT_DIR}
                             '
                         """
                     }
