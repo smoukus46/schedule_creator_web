@@ -71,14 +71,14 @@ pipeline {
 
     post {
         success {
-            bat 'chcp 65001 > nul && echo "Деплой успешно завершен!"'
+            bat 'chcp 65001 > nul && echo "Deploy finished successful!"'
             bat """
                 chcp 65001 > nul && echo "Frontend: http://${SERVER_IP}:3000" &&
                 echo "Backend: http://${SERVER_IP}:8000"
             """
         }
         failure {
-            bat 'chcp 65001 > nul && echo "Ошибка при деплое!"'
+            bat 'chcp 65001 > nul && echo "DeployError"'
         }
     }
 }
