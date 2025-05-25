@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: FrontDocker
+    image: frontend-image
+    container_name: vue-frontend
+    #ports:
+      #- "80:80"
+    volumes:
+      - shared-data:/usr/share/nginx/html
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./backend
@@ -12,19 +25,6 @@ services:
     container_name: fastapi-backend
     ports:
       - "8000:8000"
-    networks:
-      - app-network
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: FrontDocker
-    image: frontend-image
-    container_name: vue-frontend
-    #ports:
-      #- "80:80"
-    volumes:
-      - shared-data:/usr/share/nginx/html
     networks:
       - app-network
 
