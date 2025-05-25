@@ -12,7 +12,7 @@ pipeline {
         GIT_BASH = 'C:\\Program Files\\Git\\bin\\bash.exe'
     }
 
-    stages {
+   stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -22,30 +22,30 @@ pipeline {
 
         stage('Prepare Server') {
             steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ubuntu-server-key',
-                    keyFileVariable: 'SSH_KEY',
-                    usernameVariable: 'SSH_USER'
-                )]) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ubuntu-server-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
+                    string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
+                ]) {
                     script {
-                        // Используем Git Bash для выполнения команд
-                        bat """
-                            "%GIT_BASH%" -c '
-                            ssh -o StrictHostKeyChecking=no \
-                                -i "${SSH_KEY}" \
-                                ${SSH_USER}@${SERVER_IP} \
-                                "mkdir -p ${PROJECT_DIR} && chmod 777 ${PROJECT_DIR}"
-                            '
-                        """
+                        writeFile file: 'prepare_server.sh', text: """#!/bin/bash
+                            chmod 600 "\$SSH_KEY"
+                            ssh -o StrictHostKeyChecking=no \\
+                                -i "\$SSH_KEY" \\
+                                "\$SSH_USER"@"\$SERVER_IP" \\
+                                "mkdir -p \$PROJECT_DIR && chmod 777 \$PROJECT_DIR"
 
-                        bat """
-                            "%GIT_BASH%" -c '
-                            scp -o StrictHostKeyChecking=no \
-                                -i "${SSH_KEY}" \
-                                -r ./* \
-                                ${SSH_USER}@${SERVER_IP}:${PROJECT_DIR}
-                            '
+                            scp -o StrictHostKeyChecking=no \\
+                                -i "\$SSH_KEY" \\
+                                -r ./* \\
+                                "\$SSH_USER"@"\$SERVER_IP":"\$PROJECT_DIR"
                         """
+                        bat 'type prepare_server.sh' // Для отладки
+                        bat "\"%GIT_BASH%\" prepare_server.sh"
                     }
                 }
             }
@@ -53,23 +53,27 @@ pipeline {
 
         stage('Deploy with Docker') {
             steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ubuntu-server-key',
-                    keyFileVariable: 'SSH_KEY',
-                    usernameVariable: 'SSH_USER'
-                )]) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ubuntu-server-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
+                    string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
+                ]) {
                     script {
-                        bat """
-                            "%GIT_BASH%" -c '
-                            ssh -o StrictHostKeyChecking=no \
-                                -i "${SSH_KEY}" \
-                                ${SSH_USER}@${SERVER_IP} \
-                                "cd ${PROJECT_DIR} && \
-                                docker-compose down && \
-                                docker-compose build --no-cache && \
+                        writeFile file: 'deploy_docker.sh', text: """#!/bin/bash
+                            chmod 600 "\$SSH_KEY"
+                            ssh -o StrictHostKeyChecking=no \\
+                                -i "\$SSH_KEY" \\
+                                "\$SSH_USER"@"\$SERVER_IP" \\
+                                "cd \$PROJECT_DIR && \\
+                                docker-compose down && \\
+                                docker-compose build --no-cache && \\
                                 docker-compose up -d"
-                            '
                         """
+                        bat "\"%GIT_BASH%\" deploy_docker.sh"
                     }
                 }
             }
@@ -79,7 +83,11 @@ pipeline {
     post {
         success {
             echo "Deploy finished successful!"
-            echo "Backend enable on: http://${SERVER_IP}:8000"
+            script {
+                withCredentials([string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP')]) {
+                    echo "Backend available on: http://${SERVER_IP}:8000"
+                }
+            }
         }
         failure {
             echo "DeployError"
