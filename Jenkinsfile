@@ -5,7 +5,7 @@ pipeline {
         // Настройки сервера
         SERVER_IP = '195.133.66.33'
         SSH_CREDS = 'ubuntu-server-key'
-        PROJECT_DIR = '/root/schedule_creator'
+        PROJECT_DIR = '/root/schedule_creator_web'
         BACKEND_PORT = '8000'
 
         // Путь к Git Bash
@@ -67,7 +67,7 @@ pipeline {
                             chmod 600 "\$SSH_KEY"
                             ssh -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} "
                                 cd ${PROJECT_DIR} &&
-                                docker-compose down --remove-orphans &&
+                                docker-compose down &&
                                 docker system prune -af &&  # Очистка кеша Docker
                                 git pull origin main &&    # Обновление кода
                                 docker-compose build --no-cache &&
