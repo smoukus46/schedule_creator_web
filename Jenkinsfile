@@ -28,7 +28,7 @@ pipeline {
                 script {
                     try {
                         bat """
-                            echo y | "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh ubuntu@${SERVER_IP} "echo Adding host to known hosts"
+                            echo y | "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh root@${SERVER_IP} "echo Adding host to known hosts"
                         """
                     } catch (Exception e) {
                         echo "Игнорируем ошибку добавления host key"
@@ -47,7 +47,7 @@ pipeline {
                         // Используем plink вместо ssh-agent
                         bat """
                             set PLINK_PATH=C:\\Program Files\\PuTTY\\plink.exe
-                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh ubuntu@${SERVER_IP} "
+                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh root@${SERVER_IP} "
                             mkdir -p ${PROJECT_DIR} &&
                             rm -rf ${PROJECT_DIR}/*
                             "
@@ -56,7 +56,7 @@ pipeline {
                         // Копируем файлы через pscp
                         bat """
                             set PSCP_PATH=C:\\Program Files\\PuTTY\\pscp.exe
-                            "%PSCP_PATH%" -i "%SSH_KEY%" -r . ubuntu@${SERVER_IP}:${PROJECT_DIR}
+                            "%PSCP_PATH%" -i "%SSH_KEY%" -r . root@${SERVER_IP}:${PROJECT_DIR}
                         """
                     }
                 }
@@ -72,7 +72,7 @@ pipeline {
                     script {
                         bat """
                             set PLINK_PATH=C:\\Program Files\\PuTTY\\plink.exe
-                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh ubuntu@${SERVER_IP} "
+                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh root@${SERVER_IP} "
                             cd ${PROJECT_DIR} &&
                             docker-compose down &&
                             docker-compose build --no-cache &&
