@@ -72,7 +72,6 @@ pipeline {
                                 docker-compose down && \\
                                 docker-compose build --no-cache && \\
                                 docker-compose up -d"
-                            '
                         """
                         bat "\"%GIT_BASH%\" deploy_docker.sh"
                     }
