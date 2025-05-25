@@ -5,7 +5,6 @@ pipeline {
         // Настройки сервера
         SERVER_IP = '195.133.66.33'  // Ваш IP сервера Ubuntu
         SSH_CREDS = 'ubuntu-server-key' // ID SSH-ключей из Jenkins
-        SSH_USER = 'root'
         PROJECT_DIR = '/root/schedule_creator' // Директория на сервере
 
         // Переменные окружения (адаптируйте под ваши нужды)
@@ -24,7 +23,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(
                     credentialsId: 'ubuntu-server-key',
-                    keyFileVariable: 'SSH_KEY'
+                    keyFileVariable: 'SSH_KEY',
                     usernameVariable: 'SSH_USER'
                 )]) {
                     script {
