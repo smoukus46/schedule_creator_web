@@ -32,20 +32,15 @@ pipeline {
                     string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
                 ]) {
                     script {
-                        writeFile file: 'prepare_server.sh', text: """#!/bin/bash
-                            chmod 600 "\$SSH_KEY"
-                            ssh -o StrictHostKeyChecking=no \\
-                                -i "\$SSH_KEY" \\
-                                "\$SSH_USER"@"\$SERVER_IP" \\
-                                "mkdir -p \$PROJECT_DIR && chmod 777 \$PROJECT_DIR"
+                        bat """
+                            "%GIT_BASH%" -c '
+                            ssh -o StrictHostKeyChecking=no -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} \
+                                "mkdir -p ${PROJECT_DIR}"
 
-                            scp -o StrictHostKeyChecking=no \\
-                                -i "\$SSH_KEY" \\
-                                -r ./* \\
-                                "\$SSH_USER"@"\$SERVER_IP":"\$PROJECT_DIR"
+                            scp -o StrictHostKeyChecking=no -i "${SSH_KEY}" -r ./* \
+                                ${SSH_USER}@${SERVER_IP}:${PROJECT_DIR}
+                            '
                         """
-                        bat 'type prepare_server.sh' // Для отладки
-                        bat "\"%GIT_BASH%\" prepare_server.sh"
                     }
                 }
             }
@@ -63,18 +58,16 @@ pipeline {
                     string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
                 ]) {
                     script {
-                        writeFile file: 'deploy_docker.sh', text: """#!/bin/bash
-                            chmod 600 "\$SSH_KEY"
-                            ssh -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} "
-                                cd ${PROJECT_DIR} &&
-                                docker-compose down &&
-                                docker system prune -af &&  # Очистка кеша Docker
-                                git pull origin main &&    # Обновление кода
-                                docker-compose build --no-cache &&
-                                docker-compose up -d
-                            "
+                          bat """
+                            "%GIT_BASH%" -c '
+                            ssh -o StrictHostKeyChecking=no -i "${SSH_KEY}" ${SSH_USER}@${SERVER_IP} \
+                                "cd ${PROJECT_DIR} && \
+                                docker-compose down && \
+                                docker system prune -af && \
+                                docker-compose build --no-cache && \
+                                docker-compose up -d"
+                            '
                         """
-                        bat "\"%GIT_BASH%\" deploy_docker.sh"
                     }
                 }
             }
