@@ -70,7 +70,6 @@ pipeline {
                                 "\$SSH_USER"@"\$SERVER_IP" \\
                                 "cd \$PROJECT_DIR && \\
                                 docker-compose down && \\
-                                docker system prune -af && \\
                                 docker-compose build --no-cache && \\
                                 docker-compose up -d"
                             '
