@@ -16,24 +16,31 @@ pipeline {
             steps {
                 git branch: 'main',
                      url: 'https://github.com/smoukus46/schedule_creator_web.git'
+                // Исправляем кодировку для русских символов
+                bat 'chcp 65001 > nul'
             }
         }
 
-        stage('Prepare Server') {
+       stage('Prepare Server') {
             steps {
-                sshagent([SSH_CREDS]) {
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'ubuntu-server-key',
+                    keyFileVariable: 'SSH_KEY'
+                )]) {
                     script {
-                        // Создаем рабочую директорию на сервере
+                        // Используем plink вместо ssh-agent
                         bat """
-                            ssh -o StrictHostKeyChecking=no ${SERVER_IP} "
+                            set PLINK_PATH=C:\\Program Files\\PuTTY\\plink.exe
+                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh ubuntu@${SERVER_IP} "
                             mkdir -p ${PROJECT_DIR} &&
                             rm -rf ${PROJECT_DIR}/*
                             "
                         """
 
-                        // Копируем файлы на сервер
+                        // Копируем файлы через pscp
                         bat """
-                            scp -o StrictHostKeyChecking=no -r . ${SERVER_IP}:${PROJECT_DIR}
+                            set PSCP_PATH=C:\\Program Files\\PuTTY\\pscp.exe
+                            "%PSCP_PATH%" -i "%SSH_KEY%" -r . ubuntu@${SERVER_IP}:${PROJECT_DIR}
                         """
                     }
                 }
@@ -42,11 +49,14 @@ pipeline {
 
         stage('Build & Deploy') {
             steps {
-                sshagent([SSH_CREDS]) {
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'ubuntu-server-key',
+                    keyFileVariable: 'SSH_KEY'
+                )]) {
                     script {
-                        // Запускаем docker-compose
                         bat """
-                            ssh -o StrictHostKeyChecking=no ${SERVER_IP} "
+                            set PLINK_PATH=C:\\Program Files\\PuTTY\\plink.exe
+                            "%PLINK_PATH%" -i "%SSH_KEY%" -ssh ubuntu@${SERVER_IP} "
                             cd ${PROJECT_DIR} &&
                             docker-compose down &&
                             docker-compose build --no-cache &&
@@ -57,36 +67,18 @@ pipeline {
                 }
             }
         }
-
-        stage('Health Check') {
-            steps {
-                sshagent([SSH_CREDS]) {
-                    script {
-                        // Проверяем работу контейнеров
-                        bat """
-                            ssh -o StrictHostKeyChecking=no ${SERVER_IP} "
-                            docker ps --filter 'name=schedule_creator' &&
-                            curl -s http://localhost:${FRONTEND_PORT}/health || echo 'Frontend not ready' &&
-                            curl -s http://localhost:${BACKEND_PORT}/health || echo 'Backend not ready'
-                            "
-                        """
-                    }
-                }
-            }
-        }
     }
 
     post {
         success {
+            bat 'chcp 65001 > nul && echo "Деплой успешно завершен!"'
             bat """
-                echo "Деплой успешно завершен!"
-                echo "Frontend: http://${SERVER_IP}:${FRONTEND_PORT}"
-                echo "Backend: http://${SERVER_IP}:${BACKEND_PORT}"
+                chcp 65001 > nul && echo "Frontend: http://${SERVER_IP}:3000" &&
+                echo "Backend: http://${SERVER_IP}:8000"
             """
         }
         failure {
-            bat 'echo "Ошибка при деплое!"'
-            // Дополнительные действия при ошибке
+            bat 'chcp 65001 > nul && echo "Ошибка при деплое!"'
         }
     }
 }
