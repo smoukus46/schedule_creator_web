@@ -10,7 +10,7 @@ services:
     #ports:
       #- "80:80"
     volumes:
-      - ./frontend/dist:/usr/share/nginx/html
+      - shared-data:/usr/share/nginx/html
     networks:
       - app-network
 
