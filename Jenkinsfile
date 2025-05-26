@@ -84,7 +84,7 @@ pipeline {
         }
     }
 
-           stage('Clone Test Repo') {
+         stage('Clone Test Repo') {
             steps {
                 dir('autotests') {
                     git branch: 'main',
@@ -93,7 +93,7 @@ pipeline {
             }
         }
 
-           stage('Build Test Docker Image') {
+         stage('Build Test Docker Image') {
             steps {
                 dir('autotests') {
                     script {
