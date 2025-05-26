@@ -140,8 +140,7 @@ pipeline {
                                     -v \\\$(pwd)/allure-results:/allure-results \\
                                     --network=host \\
                                     -e BASE_URL=http://195.133.66.33:8000 \\
-                                    autotests"
-                                || true
+                                    autotests || true"
                         """
                         bat "\"%GIT_BASH%\" run_tests.sh"
                     }
@@ -149,8 +148,10 @@ pipeline {
             }
         }
 
-        stage('Download Allure Results') {
-            steps {
+
+    post {
+        always {
+            script {
                 withCredentials([
                     sshUserPrivateKey(
                         credentialsId: 'ubuntu-server-key',
@@ -160,37 +161,25 @@ pipeline {
                     string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
                     string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
                 ]) {
-                    script {
-                        writeFile file: 'download_results.sh', text: """#!/bin/bash
-                            chmod 600 "\$SSH_KEY"
-                            rm -rf allure-results
-                            scp -o StrictHostKeyChecking=no \\
-                                -i "\$SSH_KEY" \\
-                                -r "\$SSH_USER"@"\$SERVER_IP":"\$PROJECT_DIR/autotests/allure-results" .
-                        """
-                        bat "\"%GIT_BASH%\" download_results.sh"
-                    }
+                    writeFile file: 'download_results.sh', text: """#!/bin/bash
+                        chmod 600 "\$SSH_KEY"
+                        rm -rf allure-results
+                        scp -o StrictHostKeyChecking=no \\
+                            -i "\$SSH_KEY" \\
+                            -r "\$SSH_USER"@"\$SERVER_IP":"\$PROJECT_DIR/autotests/allure-results" .
+                    """
+                    bat "\"%GIT_BASH%\" download_results.sh"
                 }
             }
+
+            archiveArtifacts artifacts: "${ALLURE_RESULTS}/**", allowEmptyArchive: true
+            allure([
+                includeProperties: false,
+                jdk: '',
+                results: [[path: "${ALLURE_RESULTS}"]]
+            ])
         }
 
-        stage('Publish Allure Report') {
-            steps {
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    results: [[path: 'allure-results']],
-                    reportBuildPolicy: 'ALWAYS'
-                ])
-            }
-        }
-   }
-
-    post {
-        always {
-            // Архивируем отчет как артефакт
-            archiveArtifacts artifacts: "${ALLURE_RESULTS_DIR}/**", allowEmptyArchive: true
-        }
         success {
             echo "Deploy finished successful!"
             script {
