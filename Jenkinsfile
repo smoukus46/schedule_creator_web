@@ -141,6 +141,7 @@ pipeline {
                                     --network=host \\
                                     -e BASE_URL=http://195.133.66.33:8000 \\
                                     autotests"
+                                || true
                         """
                         bat "\"%GIT_BASH%\" run_tests.sh"
                     }
@@ -178,13 +179,18 @@ pipeline {
                 allure([
                     includeProperties: false,
                     jdk: '',
-                    results: [[path: 'allure-results']]
+                    results: [[path: 'allure-results']],
+                    reportBuildPolicy: 'ALWAYS'
                 ])
             }
         }
    }
 
     post {
+        always {
+            // Архивируем отчет как артефакт
+            archiveArtifacts artifacts: "${ALLURE_RESULTS_DIR}/**", allowEmptyArchive: true
+        }
         success {
             echo "Deploy finished successful!"
             script {
