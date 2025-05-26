@@ -6,6 +6,7 @@ pipeline {
         SERVER_IP = '195.133.66.33'
         SSH_CREDS = 'ubuntu-server-key'
         PROJECT_DIR = '/root/schedule_creator'
+        TEST_DIR = '/root/schedule_creator/autotests'
         BACKEND_PORT = '8000'
 
         // Путь к Git Bash
@@ -94,9 +95,24 @@ pipeline {
 
          stage('Build Test Docker Image') {
             steps {
-                dir('autotests') {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ubuntu-server-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
+                    string(credentialsId: 'TEST_DIR', variable: 'TEST_DIR')
+                ]) {
                     script {
-                        bat "\"%GIT_BASH%\" docker build -t autotests ."
+                        writeFile file: 'build_tests.sh', text: """#!/bin/bash
+                            chmod 600 "\$SSH_KEY"
+                            ssh -o StrictHostKeyChecking=no \\
+                                -i "\$SSH_KEY" \\
+                                "\$SSH_USER"@"\$SERVER_IP" \\
+                                "cd \$TEST_DIR/autotests && docker build -t autotests ."
+                        """
+                        bat "\"%GIT_BASH%\" build_tests.sh"
                     }
                 }
             }
@@ -104,13 +120,56 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                script {
-                    bat "\"%GIT_BASH%\" -c 'rm -rf allure-results && mkdir -p allure-results && \
-                        docker run --rm \
-                        -v \"$PWD/allure-results:/allure-results\" \
-                        --network=host \
-                        -e BASE_URL=http://195.133.66.33:8000 \
-                        autotests'"
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ubuntu-server-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
+                    string(credentialsId: 'TEST_DIR', variable: 'TEST_DIR')
+                ]) {
+                    script {
+                        writeFile file: 'run_tests.sh', text: """#!/bin/bash
+                            chmod 600 "\$SSH_KEY"
+                            ssh -o StrictHostKeyChecking=no \\
+                                -i "\$SSH_KEY" \\
+                                "\$SSH_USER"@"\$SERVER_IP" \\
+                                "cd \$TEST_DIR/autotests && \\
+                                rm -rf allure-results && mkdir -p allure-results && \\
+                                docker run --rm \\
+                                    -v \\\$(pwd)/allure-results:/allure-results \\
+                                    --network=host \\
+                                    -e BASE_URL=http://195.133.66.33:8000 \\
+                                    autotests"
+                        """
+                        bat "\"%GIT_BASH%\" run_tests.sh"
+                    }
+                }
+            }
+        }
+
+        stage('Download Allure Results') {
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'ubuntu-server-key',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    ),
+                    string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
+                    string(credentialsId: 'TEST_DIR', variable: 'TEST_DIR')
+                ]) {
+                    script {
+                        writeFile file: 'download_results.sh', text: """#!/bin/bash
+                            chmod 600 "\$SSH_KEY"
+                            rm -rf allure-results
+                            scp -o StrictHostKeyChecking=no \\
+                                -i "\$SSH_KEY" \\
+                                -r "\$SSH_USER"@"\$SERVER_IP":"\$TEST_DIR/autotests/allure-results" .
+                        """
+                        bat "\"%GIT_BASH%\" download_results.sh"
+                    }
                 }
             }
         }
