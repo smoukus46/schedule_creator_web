@@ -82,7 +82,6 @@ pipeline {
                 }
             }
         }
-    }
 
          stage('Clone Test Repo') {
             steps {
@@ -130,6 +129,7 @@ pipeline {
             }
         }
     }
+}
 
     post {
         success {
