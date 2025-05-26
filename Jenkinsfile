@@ -6,7 +6,6 @@ pipeline {
         SERVER_IP = '195.133.66.33'
         SSH_CREDS = 'ubuntu-server-key'
         PROJECT_DIR = '/root/schedule_creator'
-        TEST_DIR = '/root/schedule_creator/autotests'
         BACKEND_PORT = '8000'
 
         // Путь к Git Bash
@@ -102,7 +101,7 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     ),
                     string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
-                    string(credentialsId: 'TEST_DIR', variable: 'TEST_DIR')
+                    string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
                 ]) {
                     script {
                         writeFile file: 'build_tests.sh', text: """#!/bin/bash
@@ -110,7 +109,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no \\
                                 -i "\$SSH_KEY" \\
                                 "\$SSH_USER"@"\$SERVER_IP" \\
-                                "cd \$TEST_DIR/autotests && docker build -t autotests ."
+                                "cd \$PROJECT_DIR/autotests && docker build -t autotests ."
                         """
                         bat "\"%GIT_BASH%\" build_tests.sh"
                     }
@@ -127,7 +126,7 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     ),
                     string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
-                    string(credentialsId: 'TEST_DIR', variable: 'TEST_DIR')
+                    string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
                 ]) {
                     script {
                         writeFile file: 'run_tests.sh', text: """#!/bin/bash
@@ -135,7 +134,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no \\
                                 -i "\$SSH_KEY" \\
                                 "\$SSH_USER"@"\$SERVER_IP" \\
-                                "cd \$TEST_DIR/autotests && \\
+                                "cd \$PROJECT_DIR/autotests && \\
                                 rm -rf allure-results && mkdir -p allure-results && \\
                                 docker run --rm \\
                                     -v \\\$(pwd)/allure-results:/allure-results \\
@@ -158,7 +157,7 @@ pipeline {
                         usernameVariable: 'SSH_USER'
                     ),
                     string(credentialsId: 'SERVER_IP', variable: 'SERVER_IP'),
-                    string(credentialsId: 'TEST_DIR', variable: 'TEST_DIR')
+                    string(credentialsId: 'PROJECT_DIR', variable: 'PROJECT_DIR')
                 ]) {
                     script {
                         writeFile file: 'download_results.sh', text: """#!/bin/bash
@@ -166,7 +165,7 @@ pipeline {
                             rm -rf allure-results
                             scp -o StrictHostKeyChecking=no \\
                                 -i "\$SSH_KEY" \\
-                                -r "\$SSH_USER"@"\$SERVER_IP":"\$TEST_DIR/autotests/allure-results" .
+                                -r "\$SSH_USER"@"\$SERVER_IP":"\$PROJECT_DIR/autotests/allure-results" .
                         """
                         bat "\"%GIT_BASH%\" download_results.sh"
                     }
