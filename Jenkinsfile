@@ -96,7 +96,7 @@ pipeline {
             steps {
                 dir('autotests') {
                     script {
-                        sh 'docker build -t autotests .'
+                        bat "\"%GIT_BASH%\" docker build -t autotests ."
                     }
                 }
             }
@@ -105,16 +105,12 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh '''
-                        rm -rf allure-results
-                        mkdir -p allure-results
-
+                    bat "\"%GIT_BASH%\" -c 'rm -rf allure-results && mkdir -p allure-results && \
                         docker run --rm \
-                            -v $PWD/allure-results:/allure-results \
-                            --network=host \
-                            -e BASE_URL=http://195.133.66.33:8000 \
-                            autotests
-                    '''
+                        -v \"$PWD/allure-results:/allure-results\" \
+                        --network=host \
+                        -e BASE_URL=http://195.133.66.33:8000 \
+                        autotests'"
                 }
             }
         }
