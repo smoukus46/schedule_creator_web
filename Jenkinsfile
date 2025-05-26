@@ -109,6 +109,7 @@ pipeline {
                             ssh -o StrictHostKeyChecking=no \\
                                 -i "\$SSH_KEY" \\
                                 "\$SSH_USER"@"\$SERVER_IP" \\
+                                docker system prune -af && \\
                                 "cd \$PROJECT_DIR/autotests && docker build -t autotests ."
                         """
                         bat "\"%GIT_BASH%\" build_tests.sh"
