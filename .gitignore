@@ -28,3 +28,9 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+.idea/
+pythonProject/.idea/
+__pycache__/
+.pytest_cache/
+.venv/
