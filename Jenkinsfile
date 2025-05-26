@@ -10,6 +10,8 @@ pipeline {
 
         // Путь к Git Bash
         GIT_BASH = 'C:\\Program Files\\Git\\bin\\bash.exe'
+        ALLURE_RESULTS = 'allure-results'
+        TEST_IMAGE = 'autotests:latest'
     }
 
    stages {
@@ -78,6 +80,53 @@ pipeline {
                         bat "\"%GIT_BASH%\" deploy_docker.sh"
                     }
                 }
+            }
+        }
+    }
+
+           stage('Clone Test Repo') {
+            steps {
+                dir('autotests') {
+                    git branch: 'main',
+                        url: 'https://github.com/smoukus46/schedule_creator_web_autotest_project.git'
+                }
+            }
+        }
+
+           stage('Build Test Docker Image') {
+            steps {
+                dir('autotests') {
+                    script {
+                        sh 'docker build -t autotests .'
+                    }
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    sh '''
+                        rm -rf allure-results
+                        mkdir -p allure-results
+
+                        docker run --rm \
+                            -v $PWD/allure-results:/allure-results \
+                            --network=host \
+                            -e BASE_URL=http://195.133.66.33:8000 \
+                            autotests
+                    '''
+                }
+            }
+        }
+
+        stage('Publish Allure Report') {
+            steps {
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: 'allure-results']]
+                ])
             }
         }
     }
