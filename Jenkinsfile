@@ -128,8 +128,7 @@ pipeline {
                 ])
             }
         }
-    }
-}
+   }
 
     post {
         success {
